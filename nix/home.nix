@@ -11,6 +11,7 @@
 
     sleep 1
 
+    ${pkgs.swww}/bin/swww img ~/wallpaper/wallpaper-1.jpg &
   '';
   onePassPath = "~/.1password/agent.sock";
 in {
@@ -30,6 +31,9 @@ in {
   home.file = {
     ".local/bin/tmux-sessionizer" = {
       source = ../scripts/tmux-sessionizer;
+    };
+    "wallpaper/wallpaper-1.jpg" = {
+      source = ../assets/wallpaper-1.jpg;
     };
   };
 
@@ -241,7 +245,7 @@ in {
     ];
     env = [
       "LIBVA_DRIVER_NAME,nvidia"
-      "ELECTRON_OZON_PLATFORM_HINT,wayland"
+      "ELECTRON_OZONE_PLATFORM_HINT,wayland"
       "XDG_SESSION_TYPE,wayland"
       "GBM_BACKEND,nvidia-drm"
       "__GLX_VENDOR_LIBRARY_NAME,nvidia"
@@ -257,6 +261,7 @@ in {
     enable = true;
   };
   programs.rofi.theme = "solarized";
+  programs.lazygit.enable = true;
   # Let home Manager install and manage itself.
   programs.home-manager.enable = true;
 }
