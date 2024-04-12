@@ -1,12 +1,12 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{
-  config,
-  pkgs,
-  inputs,
-  ...
-}: let
+{ config
+, pkgs
+, inputs
+, ...
+}:
+let
   overlays = [
     inputs.neovim-nightly-overlay.overlay
     (import ./tick-tick-latest-overlay.nix)
@@ -18,23 +18,24 @@
     })
   ];
   hyprland-unstable = inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-in {
+in
+{
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
   nix.settings = {
-    substituters = ["https://hyprland.cachix.org"];
-    trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
+    substituters = [ "https://hyprland.cachix.org" ];
+    trusted-public-keys = [ "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" ];
   };
-  nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.overlays = overlays;
   # Bootloader.
   boot.loader = {
     efi.canTouchEfiVariables = true;
     grub = {
       enable = true;
-      devices = ["nodev"];
+      devices = [ "nodev" ];
       efiSupport = true;
       useOSProber = true;
     };
@@ -60,7 +61,7 @@ in {
     driSupport32Bit = true;
   };
 
-  services.xserver.videoDrivers = ["nvidia"];
+  services.xserver.videoDrivers = [ "nvidia" ];
   virtualisation.docker.enable = true;
   hardware.nvidia = {
     # Modesetting is required.
@@ -91,28 +92,29 @@ in {
 
     # Optionally, you may need to select the appropriate driver version for your specific GPU.
     # package = config.boot.kernelPackages.nvidiaPackages.production;
-    package = let
-      rcu_patch = pkgs.fetchpatch {
-        url = "https://github.com/gentoo/gentoo/raw/c64caf53/x11-drivers/nvidia-drivers/files/nvidia-drivers-470.223.02-gpl-pfn_valid.patch";
-        hash = "sha256-eZiQQp2S/asE7MfGvfe6dA/kdCvek9SYa/FFGp24dVg=";
-      };
-    in
+    package =
+      let
+        rcu_patch = pkgs.fetchpatch {
+          url = "https://github.com/gentoo/gentoo/raw/c64caf53/x11-drivers/nvidia-drivers/files/nvidia-drivers-470.223.02-gpl-pfn_valid.patch";
+          hash = "sha256-eZiQQp2S/asE7MfGvfe6dA/kdCvek9SYa/FFGp24dVg=";
+        };
+      in
       config.boot.kernelPackages.nvidiaPackages.mkDriver {
-       version = "535.154.05";
-       sha256_64bit = "sha256-fpUGXKprgt6SYRDxSCemGXLrEsIA6GOinp+0eGbqqJg=";
-       sha256_aarch64 = "sha256-G0/GiObf/BZMkzzET8HQjdIcvCSqB1uhsinro2HLK9k=";
-       openSha256 = "sha256-wvRdHguGLxS0mR06P5Qi++pDJBCF8pJ8hr4T8O6TJIo=";
-       settingsSha256 = "sha256-9wqoDEWY4I7weWW05F4igj1Gj9wjHsREFMztfEmqm10=";
-       persistencedSha256 = "sha256-d0Q3Lk80JqkS1B54Mahu2yY/WocOqFFbZVBh+ToGhaE=";
+        version = "535.154.05";
+        sha256_64bit = "sha256-fpUGXKprgt6SYRDxSCemGXLrEsIA6GOinp+0eGbqqJg=";
+        sha256_aarch64 = "sha256-G0/GiObf/BZMkzzET8HQjdIcvCSqB1uhsinro2HLK9k=";
+        openSha256 = "sha256-wvRdHguGLxS0mR06P5Qi++pDJBCF8pJ8hr4T8O6TJIo=";
+        settingsSha256 = "sha256-9wqoDEWY4I7weWW05F4igj1Gj9wjHsREFMztfEmqm10=";
+        persistencedSha256 = "sha256-d0Q3Lk80JqkS1B54Mahu2yY/WocOqFFbZVBh+ToGhaE=";
 
-      #  version = "550.40.07";
-      #  sha256_64bit = "sha256-KYk2xye37v7ZW7h+uNJM/u8fNf7KyGTZjiaU03dJpK0=";
-      #  sha256_aarch64 = "sha256-AV7KgRXYaQGBFl7zuRcfnTGr8rS5n13nGUIe3mJTXb4=";
-      #  openSha256 = "sha256-mRUTEWVsbjq+psVe+kAT6MjyZuLkG2yRDxCMvDJRL1I=";
-      #  settingsSha256 = "sha256-c30AQa4g4a1EHmaEu1yc05oqY01y+IusbBuq+P6rMCs=";
-      #  persistencedSha256 = "sha256-11tLSY8uUIl4X/roNnxf5yS2PQvHvoNjnd2CB67e870=";
+        #  version = "550.40.07";
+        #  sha256_64bit = "sha256-KYk2xye37v7ZW7h+uNJM/u8fNf7KyGTZjiaU03dJpK0=";
+        #  sha256_aarch64 = "sha256-AV7KgRXYaQGBFl7zuRcfnTGr8rS5n13nGUIe3mJTXb4=";
+        #  openSha256 = "sha256-mRUTEWVsbjq+psVe+kAT6MjyZuLkG2yRDxCMvDJRL1I=";
+        #  settingsSha256 = "sha256-c30AQa4g4a1EHmaEu1yc05oqY01y+IusbBuq+P6rMCs=";
+        #  persistencedSha256 = "sha256-11tLSY8uUIl4X/roNnxf5yS2PQvHvoNjnd2CB67e870=";
 
-       patches = [rcu_patch];
+        patches = [ rcu_patch ];
       };
   };
   # Set your time zone.
@@ -145,7 +147,7 @@ in {
     layout = "gb";
     variant = "";
   };
-  
+
   programs.ssh.startAgent = true;
   xdg.portal = {
     enable = true;
@@ -203,7 +205,7 @@ in {
     isNormalUser = true;
     shell = pkgs.fish;
     description = "Monish Thirukkumaran";
-    extraGroups = ["networkmanager" "wheel" "docker"];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     packages = with pkgs; [
       #  thunderbird
     ];
@@ -226,7 +228,6 @@ in {
     dolphin
 
     # hyprland
-    waybar
     dunst
     libnotify
     swww
@@ -234,14 +235,16 @@ in {
     wl-clipboard
 
     firefox
+    python311
     google-chrome
     inputs.alejandra.defaultPackage.${system}
+    pavucontrol
   ];
 
   programs._1password.enable = true;
   programs._1password-gui = {
     enable = true;
-    polkitPolicyOwners = ["monish"];
+    polkitPolicyOwners = [ "monish" ];
   };
   environment.etc = {
     "1password/custom_allowed_browsers" = {
@@ -258,8 +261,9 @@ in {
   };
 
   programs.tmux = {
-    extraConfig = (builtins.readFile ./.tmux.conf);
+    extraConfig = builtins.readFile ./.tmux.conf;
   };
+  # programs.nix-ld.enable = true;
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;

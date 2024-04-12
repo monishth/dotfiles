@@ -1,10 +1,10 @@
-{
-  config,
-  pkgs,
-  pkgs-unstable,
-  inputs,
-  ...
-}: let
+{ config
+, pkgs
+, pkgs-unstable
+, inputs
+, ...
+}:
+let
   startupScript = pkgs.pkgs.writeShellScriptBin "start" ''
     ${pkgs.waybar}/bin/waybar &
     ${pkgs.swww}/bin/swww init &
@@ -14,21 +14,34 @@
     ${pkgs.swww}/bin/swww img ~/wallpaper/wallpaper-1.jpg &
   '';
   onePassPath = "~/.1password/agent.sock";
-in {
+in
+{
   # TODO please change the username & home directory to your own
   home.username = "monish";
   home.homeDirectory = "/home/monish";
-  
+
   xdg.configFile = {
     "tmux/tmux.conf" = {
-       source = "${inputs.oh-my-tmux}/.tmux.conf";
+      source = "${inputs.oh-my-tmux}/.tmux.conf";
     };
     "tmux/tmux.conf.local" = {
-       source = ../.config/.tmux.conf.local;
+      source = ../.config/.tmux.conf.local;
     };
     "rofi" = {
       source = ../.config/rofi;
       recursive = true;
+    };
+    "waybar/config.jsonc" = {
+      source = ../.config/waybar/config;
+    };
+    "waybar/style.css" = {
+      source = ../.config/waybar/style.css;
+    };
+    "hypr/hypridle.conf" = {
+      source = ../.config/hypridle.conf;
+    };
+    "hypr/hyprlock.conf" = {
+      source = ../.config/hyprlock.conf;
     };
   };
 
@@ -39,6 +52,7 @@ in {
     "wallpaper/wallpaper-1.jpg" = {
       source = ../assets/wallpaper-1.jpg;
     };
+
   };
 
   # link the configuration file in current directory to the specified location in home directory
@@ -120,6 +134,15 @@ in {
     nodejs_18
     vesktop
     tmux
+    unstable.lazygit
+    unstable.cliphist
+    unstable.waybar
+    unstable.slurp
+    unstable.grim
+    unstable.imv
+    unstable.hypridle
+    unstable.hyprlock
+    unstable.brightnessctl
   ];
 
   # basic configuration of git, please change to your own
@@ -127,7 +150,10 @@ in {
     enable = true;
     userName = "Monish Thirukkumaran";
     userEmail = "monish.thir@gmail.com";
+
   };
+
+  programs.gh.gitCredentialHelper.enable = true;
 
   # starship - an customizable prompt for any shell
   programs.starship = {
@@ -168,11 +194,11 @@ in {
     enable = true;
     # TODO add your custom bashrc here
     shellInit = ''
-    set -U fish_greeting ""
-    set -x NPM_TOKEN 6f65d006-ab4c-4b69-a982-e2424c621d35
-    set -x EDITOR 'nvim'
-    fish_add_path $HOME/.bin
-    fish_add_path $HOME/.local/bin
+      set -U fish_greeting ""
+      set -x NPM_TOKEN 6f65d006-ab4c-4b69-a982-e2424c621d35
+      set -x EDITOR 'nvim'
+      fish_add_path $HOME/.bin
+      fish_add_path $HOME/.local/bin
     '';
 
     # set some aliases, feel free to add more or remove some
@@ -211,7 +237,12 @@ in {
   wayland.windowManager.hyprland.enable = true;
   wayland.windowManager.hyprland.package = inputs.hyprland.packages."${pkgs.system}".hyprland;
   wayland.windowManager.hyprland.settings = {
-    exec-once = ''${startupScript}/bin/start'';
+    exec-once = [
+      ''${startupScript}/bin/start''
+      "wl-paste --type text --watch cliphist store #Stores only text data"
+      "wl-paste --type image --watch cliphist store #Stores only image data"
+      "hypridle"
+    ];
     general = {
       gaps_in = 5;
       gaps_out = 20;
@@ -226,7 +257,6 @@ in {
     "$mainMod" = "SUPER";
     bind = [
       "$mainMod, Q, exec, kitty"
-      "$mainMod, S, exec, rofi -show drun"
       "$mainMod, SPACE, exec, rofi -show drun"
       "$mainMod, C, killactive"
       "$mainMod, h, movefocus, l"
@@ -244,9 +274,14 @@ in {
       "$mainMod, bracketright, changegroupactive, f"
       "$mainMod, bracketleft, changegroupactive, b"
       "$mainMod, semicolon, togglegroup"
+      "$mainMod, m, fullscreen, 1"
+      "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
+      "$mainMod, S, exec, grim ~/Pictures/screenshot_$(date +'%s_grim.png')"
+      ''$mainMod CTRL, S, exec, grim -g "$(slurp -o)" ~/Pictures/screenshot_$(date +'%s_grim.png')''
+      ''$mainMod CTRL SHIFT, S, exec, grim -g "$(slurp)" ~/Pictures/screenshot_$(date +'%s_grim.png')''
     ];
     monitor = [
-      "DP-1, 5120x1440, 0x1080, 1"
+      "DP-1, 5120x1440@240, 0x1080, 1"
       "DP-2, 2560x1080, 0x0, 1"
     ];
     env = [
@@ -258,15 +293,17 @@ in {
       "WLR_NO_HARDWARE_CURSORS,1"
       "WLR_RENDERER_ALLOW_SOFTWARE,1"
     ];
+    master = { orientation = "center"; };
   };
 
-  home.file.".tmux.conf".source = config.lib.file.mkOutOfStoreSymlink ".tmux.conf";
-  home.file.".tmux.conf.local".source = config.lib.file.mkOutOfStoreSymlink ".tmux.conf.local";
+  # home.file.".tmux.conf".source = config.lib.file.mkOutOfStoreSymlink
+  #   ".tmux.conf";
+  # home.file.".tmux.conf.local".source = config.lib.file.mkOutOfStoreSymlink
+  #   ".tmux.conf.local";
 
-  programs.tmux = {
-    enable = true;
-  };
-  programs.lazygit.enable = true;
+  # programs.tmux = {
+  #   enable = true;
+  # };
   # Let home Manager install and manage itself.
   programs.home-manager.enable = true;
 }
