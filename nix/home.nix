@@ -26,6 +26,10 @@ in {
     "tmux/tmux.conf.local" = {
        source = ../.config/.tmux.conf.local;
     };
+    "rofi" = {
+      source = ../.config/rofi;
+      recursive = true;
+    };
   };
 
   home.file = {
@@ -111,6 +115,7 @@ in {
     fzf
     unstable.ticktick
     eza
+    rofi-wayland
 
     nodejs_18
     vesktop
@@ -222,6 +227,7 @@ in {
     bind = [
       "$mainMod, Q, exec, kitty"
       "$mainMod, S, exec, rofi -show drun"
+      "$mainMod, SPACE, exec, rofi -show drun"
       "$mainMod, C, killactive"
       "$mainMod, h, movefocus, l"
       "$mainMod, j, movefocus, d"
@@ -260,7 +266,6 @@ in {
   programs.tmux = {
     enable = true;
   };
-  programs.rofi.theme = "solarized";
   programs.lazygit.enable = true;
   # Let home Manager install and manage itself.
   programs.home-manager.enable = true;

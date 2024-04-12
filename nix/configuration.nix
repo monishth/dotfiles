@@ -230,7 +230,7 @@ in {
     dunst
     libnotify
     swww
-    rofi-wayland
+    # rofi-wayland
     wl-clipboard
 
     firefox
