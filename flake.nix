@@ -19,6 +19,7 @@
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     alejandra.url = "github:kamadorueda/alejandra/3.0.0";
     alejandra.inputs.nixpkgs.follows = "nixpkgs";
+    rose-pine-hyprcursor.url = "github:ndom91/rose-pine-hyprcursor";
     oh-my-tmux = {
       url = "github:gpakosz/.tmux";
       flake = false;
@@ -31,16 +32,20 @@
     , home-manager
     , alejandra
     , ...
-    }: {
+    }:
+    let
+      pkgs-unstable = import nixpkgs-unstable {
+        system = "x86_64-linux";
+        config.allowUnfree = true;
+      };
+    in
+    {
       # Please replace my-nixos with your hostname
       nixosConfigurations.the-air-fryer = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs;
-          pkgs-unstable = import nixpkgs-unstable {
-            system = "x86_64-linux";
-            config.allowUnfree = true;
-          };
+          inherit pkgs-unstable;
         };
         modules = [
           # Import the previous configuration.nix we used,
@@ -55,7 +60,7 @@
 
             # TODO replace ryan with your own username
             home-manager.users.monish = import ./nix/home.nix;
-            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.extraSpecialArgs = { inherit inputs; inherit pkgs-unstable; };
 
             # Optionally, use home-manager.extraSpecialArgs to pass arguments to home.nix
           }

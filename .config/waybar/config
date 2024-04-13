@@ -20,7 +20,6 @@
             "activated": "",
             "deactivated": ""
         },
-		"on-click": "bash /home/dg/.local/bin/toggleRemote"
     },
     "tray": {
         "icon-size": 15,

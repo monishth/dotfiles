@@ -143,7 +143,21 @@ in
     unstable.hypridle
     unstable.hyprlock
     unstable.brightnessctl
+    unstable.spotify
+    unstable.neofetch
+    unstable.gnome.gnome-calculator
+    unstable.rofi-calc
+
+    inputs.rose-pine-hyprcursor.packages.x86_64-linux.default
+
   ];
+
+  programs.vscode = {
+    enable = true;
+    extensions = with pkgs.vscode-extensions; [
+      # ms-vsliveshare.vsliveshare
+    ];
+  };
 
   # basic configuration of git, please change to your own
   programs.git = {
@@ -172,6 +186,7 @@ in
   programs.kitty = {
     enable = true;
     # custom settings
+    package = pkgs-unstable.kitty;
     font.name = "FiraCode Nerd Font Mono Reg";
     settings = {
       background_opacity = "0.7";
@@ -248,6 +263,13 @@ in
       gaps_out = 20;
       layout = "master";
     };
+    decoration = {
+      rounding = 3;
+      dim_inactive = true;
+      dim_strength = 0.2;
+      blur = { passes = 3; size = 4; };
+    };
+    windowrule = "rounding 10,^(kitty)$";
     input = {
       kb_layout = "gb";
     };
@@ -257,12 +279,15 @@ in
     "$mainMod" = "SUPER";
     bind = [
       "$mainMod, Q, exec, kitty"
-      "$mainMod, SPACE, exec, rofi -show drun"
-      "$mainMod, C, killactive"
+      ''$mainMod, SPACE, exec, rofi -show combi -modes combi -combi-modes "window,drun,run,calc"''
+      # ''$mainMod, SPACE, exec, rofi -show calc ''
+      "ALT, F4, killactive"
       "$mainMod, h, movefocus, l"
       "$mainMod, j, movefocus, d"
       "$mainMod, k, movefocus, u"
       "$mainMod, l, movefocus, r"
+      "$mainMod SHIFT, c, movetoworkspacesilent, special"
+      "$mainMod, c, togglespecialworkspace"
       "$mainMod SHIFT, h, movewindow, l"
       "$mainMod SHIFT, j, movewindow, d"
       "$mainMod SHIFT, k, movewindow, u"
@@ -280,6 +305,7 @@ in
       ''$mainMod CTRL, S, exec, grim -g "$(slurp -o)" ~/Pictures/screenshot_$(date +'%s_grim.png')''
       ''$mainMod CTRL SHIFT, S, exec, grim -g "$(slurp)" ~/Pictures/screenshot_$(date +'%s_grim.png')''
     ];
+    bindm = [ "$mainMod, moouse:272, movewindow" ];
     monitor = [
       "DP-1, 5120x1440@240, 0x1080, 1"
       "DP-2, 2560x1080, 0x0, 1"
@@ -292,10 +318,10 @@ in
       "__GLX_VENDOR_LIBRARY_NAME,nvidia"
       "WLR_NO_HARDWARE_CURSORS,1"
       "WLR_RENDERER_ALLOW_SOFTWARE,1"
+      "HYPRCURSOR_THEME,rose-pint-hyprcursor"
     ];
     master = { orientation = "center"; };
   };
-
   # home.file.".tmux.conf".source = config.lib.file.mkOutOfStoreSymlink
   #   ".tmux.conf";
   # home.file.".tmux.conf.local".source = config.lib.file.mkOutOfStoreSymlink
