@@ -16,6 +16,25 @@ let
   onePassPath = "~/.1password/agent.sock";
 in
 {
+  imports = [
+    inputs.ags.homeManagerModules.default
+    inputs.anyrun.homeManagerModules.default
+  ];
+  gtk = {
+    enable = true;
+    iconTheme = {
+      package = pkgs.gnome.adwaita-icon-theme;
+      name = "adwaita";
+    };
+    theme = {
+      name = "Catppuccin-Macchiato-Compact-Pink-Dark";
+      package = pkgs.catppuccin-gtk.override {
+        variant = "macchiato";
+      };
+      # package = pkgs.adw-gtk3;
+    };
+  };
+
   # TODO please change the username & home directory to your own
   home.username = "monish";
   home.homeDirectory = "/home/monish";
@@ -43,6 +62,9 @@ in
     "hypr/hyprlock.conf" = {
       source = ../.config/hyprlock.conf;
     };
+    "gtk-4.0/assets".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/assets";
+    "gtk-4.0/gtk.css".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/gtk.css";
+    "gtk-4.0/gtk-dark.css".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/gtk-dark.css";
   };
 
   home.file = {
@@ -84,7 +106,6 @@ in
     ripgrep # recursively searches directories for a regex pattern
     jq # A lightweight and flexible command-line JSON processor
     eza # A modern replacement for ‘ls’
-    fzf # A command-line fuzzy finder
 
     # misc
     cowsay
@@ -126,10 +147,11 @@ in
     rustup
     clang
     gnumake
-    fzf
+    unstable.fzf
     unstable.ticktick
     eza
     rofi-wayland
+    go
 
     nodejs_18
     vesktop
@@ -147,16 +169,69 @@ in
     unstable.neofetch
     unstable.gnome.gnome-calculator
     unstable.rofi-calc
-
+    unstable.zathura
     inputs.rose-pine-hyprcursor.packages.x86_64-linux.default
+    (unstable.eww.overrideAttrs (final: prev: { withWayland = true; }))
 
+    # packges for mat ui
+    fuzzel
+    pywal
+    sassc
+    dart-sass
+    (python311.withPackages (p: [
+      p.material-color-utilities
+      p.pywayland
+    ]))
+    bun
+    unstable.lens
+    unstable.doctl
+    kubectl
+    wev
+    dbeaver
   ];
+
+  programs.ags = {
+    enable = true;
+    configDir = null; # if ags dir is managed by home-manager, it'll end up being read-only. not too cool.
+    # configDir = ./.config/ags;
+
+    extraPackages = with pkgs; [
+      gtksourceview
+      gtksourceview4
+      sassc
+      webkitgtk
+      accountsservice
+    ];
+  };
+
+  programs.anyrun = {
+    enable = true;
+    config = {
+      plugins = with inputs.anyrun.packages.${pkgs.system}; [
+        applications
+        randr
+        rink
+        shell
+        symbols
+      ];
+
+      width.fraction = 0.3;
+      y.absolute = 15;
+      hidePluginInfo = true;
+      closeOnClick = true;
+    };
+  };
 
   programs.vscode = {
     enable = true;
     extensions = with pkgs.vscode-extensions; [
-      # ms-vsliveshare.vsliveshare
+      ms-vsliveshare.vsliveshare
     ];
+    userSettings = {
+      "window.titleBarStyle" = "custom";
+      "workbench.colorTheme" = "Github Dark Colorblind (Beta)";
+      "editor.fontFamily" = "'FiraCode Nerd Font','Droid Sans Mono', 'monospace', monospace";
+    };
   };
 
   # basic configuration of git, please change to your own
@@ -204,6 +279,7 @@ in
           IdentityAgent ${onePassPath}
     '';
   };
+
 
   programs.fish = {
     enable = true;
@@ -270,6 +346,13 @@ in
       blur = { passes = 3; size = 4; };
     };
     windowrule = "rounding 10,^(kitty)$";
+    workspace = [
+      "1, m:DP-1, persistent:true, default: true"
+      "2, m:DP-1, persistent:true"
+      "3, m:DP-1, persistent:true"
+      "4, m:DP-2, persistent:true, default:true"
+      "5, m:DP-2, persistent:true"
+    ];
     input = {
       kb_layout = "gb";
     };
@@ -302,13 +385,34 @@ in
       "$mainMod, m, fullscreen, 1"
       "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
       "$mainMod, S, exec, grim ~/Pictures/screenshot_$(date +'%s_grim.png')"
+      "$mainMod, minus, layoutmsg, mfact, -0.1"
+      "$mainMod, equal, layoutmsg, mfact, +0.1"
       ''$mainMod CTRL, S, exec, grim -g "$(slurp -o)" ~/Pictures/screenshot_$(date +'%s_grim.png')''
       ''$mainMod CTRL SHIFT, S, exec, grim -g "$(slurp)" ~/Pictures/screenshot_$(date +'%s_grim.png')''
-    ];
-    bindm = [ "$mainMod, moouse:272, movewindow" ];
+    ] ++ (
+      # workspaces
+      # binds $mod + [shift +] {1..10} to [move to] workspace {1..10}
+      builtins.concatLists (builtins.genList
+        (
+          x:
+          let
+            ws =
+              let
+                c = (x + 1) / 10;
+              in
+              builtins.toString (x + 1 - (c * 10));
+          in
+          [
+            "$mainMod, ${ws}, workspace, ${toString (x + 1)}"
+            "$mainMod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
+          ]
+        )
+        6)
+    );
+    bindm = [ "$mainMod, mouse:272, movewindow" ];
     monitor = [
       "DP-1, 5120x1440@240, 0x1080, 1"
-      "DP-2, 2560x1080, 0x0, 1"
+      "DP-2, 2560x1080, 1440x0, 1"
     ];
     env = [
       "LIBVA_DRIVER_NAME,nvidia"

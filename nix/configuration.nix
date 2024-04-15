@@ -3,6 +3,7 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { config
 , pkgs
+, pkgs-master
 , inputs
 , ...
 }:
@@ -42,7 +43,8 @@ in
   };
   networking.hostName = "the-air-fryer"; # Define your hostname.
   fonts.packages = with pkgs; [
-    (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
+    (pkgs-master.nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
+    material-symbols
   ];
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -63,6 +65,7 @@ in
 
   services.xserver.videoDrivers = [ "nvidia" ];
   virtualisation.docker.enable = true;
+  virtualisation.virtualbox.host.enable = true;
   hardware.nvidia = {
     # Modesetting is required.
     modesetting.enable = true;
