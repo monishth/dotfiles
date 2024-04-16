@@ -16,7 +16,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     ags.url = "github:Aylur/ags";
-    hyprland.url = "github:hyprwm/Hyprland/v0.38.1";
+    hyprland.url = "github:hyprwm/Hyprland/v0.39.0";
     xdg-desktop-portal-hyprland.url = "github:hyprwm/xdg-desktop-portal-hyprland";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
     alejandra.url = "github:kamadorueda/alejandra/3.0.0";
@@ -33,6 +33,9 @@
     nix-ld.url = "github:Mic92/nix-ld";
     # this line assume that you also have nixpkgs as an input
     nix-ld.inputs.nixpkgs.follows = "nixpkgs";
+    matugen = {
+      url = "github:/InioX/Matugen";
+    };
   };
 
   outputs =

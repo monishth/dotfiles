@@ -188,6 +188,7 @@ in
     kubectl
     wev
     dbeaver
+    unstable.goxlr-utility
   ];
 
   programs.ags = {
@@ -356,9 +357,9 @@ in
     input = {
       kb_layout = "gb";
     };
-    # windowrulev2 = [
-    #   "suppressevent maximize, class:.*"
-    # ];
+    windowrulev2 = [
+      "suppressevent maximize, class:.*"
+    ];
     "$mainMod" = "SUPER";
     bind = [
       "$mainMod, Q, exec, kitty"
@@ -385,8 +386,8 @@ in
       "$mainMod, m, fullscreen, 1"
       "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
       "$mainMod, S, exec, grim ~/Pictures/screenshot_$(date +'%s_grim.png')"
-      "$mainMod, minus, layoutmsg, mfact, -0.1"
-      "$mainMod, equal, layoutmsg, mfact, +0.1"
+      "$mainMod, minus, layoutmsg, mfact -0.1"
+      "$mainMod, equal, layoutmsg, mfact +0.1"
       ''$mainMod CTRL, S, exec, grim -g "$(slurp -o)" ~/Pictures/screenshot_$(date +'%s_grim.png')''
       ''$mainMod CTRL SHIFT, S, exec, grim -g "$(slurp)" ~/Pictures/screenshot_$(date +'%s_grim.png')''
     ] ++ (
