@@ -231,7 +231,6 @@ in
     dolphin
 
     # hyprland
-    dunst
     libnotify
     swww
     # rofi-wayland

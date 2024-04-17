@@ -14,6 +14,7 @@ let
     ${pkgs.swww}/bin/swww img ~/wallpaper/wallpaper-1.jpg &
   '';
   onePassPath = "~/.1password/agent.sock";
+  npm_token = builtins.readFile ../npm_token;
 in
 {
   imports = [
@@ -189,6 +190,10 @@ in
     wev
     dbeaver
     unstable.goxlr-utility
+    fd
+    unstable.swaynotificationcenter
+    inputs.matugen.packages.${pkgs.system}.default
+    unstable.jetbrains.datagrip
   ];
 
   programs.ags = {
@@ -287,7 +292,7 @@ in
     # TODO add your custom bashrc here
     shellInit = ''
       set -U fish_greeting ""
-      set -x NPM_TOKEN 6f65d006-ab4c-4b69-a982-e2424c621d35
+      set -x NPM_TOKEN ${npm_token}
       set -x EDITOR 'nvim'
       fish_add_path $HOME/.bin
       fish_add_path $HOME/.local/bin
@@ -385,11 +390,13 @@ in
       "$mainMod, semicolon, togglegroup"
       "$mainMod, m, fullscreen, 1"
       "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
+      "ALT, J, exec, wl-paste | jq . | wl-copy"
       "$mainMod, S, exec, grim ~/Pictures/screenshot_$(date +'%s_grim.png')"
-      "$mainMod, minus, layoutmsg, mfact -0.1"
-      "$mainMod, equal, layoutmsg, mfact +0.1"
+      "$mainMod, minus, layoutmsg, mfact -0.05"
+      "$mainMod, equal, layoutmsg, mfact +0.05"
       ''$mainMod CTRL, S, exec, grim -g "$(slurp -o)" ~/Pictures/screenshot_$(date +'%s_grim.png')''
-      ''$mainMod CTRL SHIFT, S, exec, grim -g "$(slurp)" ~/Pictures/screenshot_$(date +'%s_grim.png')''
+      # ''$mainMod CTRL SHIFT, S, exec, grim -g "$(slurp)" ~/Pictures/screenshot_$(date +'%s_grim.png')''
+      ''$mainMod CTRL SHIFT, S, exec, grim -g "$(slurp)" - | wl-copy''
     ] ++ (
       # workspaces
       # binds $mod + [shift +] {1..10} to [move to] workspace {1..10}
