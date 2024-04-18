@@ -6,7 +6,6 @@
 }:
 let
   startupScript = pkgs.pkgs.writeShellScriptBin "start" ''
-    ${pkgs.waybar}/bin/waybar &
     ${pkgs.swww}/bin/swww init &
 
     sleep 1
@@ -65,12 +64,6 @@ in
     "rofi" = {
       source = ../.config/rofi;
       recursive = true;
-    };
-    "waybar/config.jsonc" = {
-      source = ../.config/waybar/config;
-    };
-    "waybar/style.css" = {
-      source = ../.config/waybar/style.css;
     };
     "hypr/hypridle.conf" = {
       source = ../.config/hypridle.conf;
@@ -214,7 +207,6 @@ in
     tmux
     unstable.lazygit
     unstable.cliphist
-    unstable.waybar
     unstable.slurp
     unstable.grim
     unstable.imv
