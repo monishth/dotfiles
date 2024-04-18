@@ -15,26 +15,41 @@ let
   '';
   onePassPath = "~/.1password/agent.sock";
   npm_token = builtins.readFile ../npm_token;
+
+  nerdfonts = pkgs.nerdfonts.override {
+    fonts = [
+      "Ubuntu"
+      "UbuntuMono"
+      "CascadiaCode"
+      "FantasqueSansMono"
+      "FiraCode"
+      "Mononoki"
+    ];
+  };
+
+  theme = {
+    name = "adw-gtk3-dark";
+    package = pkgs-unstable.adw-gtk3;
+  };
+  font = {
+    name = "Ubuntu Nerd Font";
+    package = nerdfonts;
+  };
+  cursorTheme = {
+    name = "Qogir";
+    size = 24;
+    package = pkgs-unstable.qogir-icon-theme;
+  };
+  iconTheme = {
+    name = "MoreWaita";
+    package = pkgs-unstable.morewaita-icon-theme;
+  };
 in
 {
   imports = [
     inputs.ags.homeManagerModules.default
     inputs.anyrun.homeManagerModules.default
   ];
-  gtk = {
-    enable = true;
-    iconTheme = {
-      package = pkgs.gnome.adwaita-icon-theme;
-      name = "adwaita";
-    };
-    theme = {
-      name = "Catppuccin-Macchiato-Compact-Pink-Dark";
-      package = pkgs.catppuccin-gtk.override {
-        variant = "macchiato";
-      };
-      # package = pkgs.adw-gtk3;
-    };
-  };
 
   # TODO please change the username & home directory to your own
   home.username = "monish";
@@ -63,9 +78,9 @@ in
     "hypr/hyprlock.conf" = {
       source = ../.config/hyprlock.conf;
     };
-    "gtk-4.0/assets".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/assets";
-    "gtk-4.0/gtk.css".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/gtk.css";
-    "gtk-4.0/gtk-dark.css".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/gtk-dark.css";
+    # "gtk-4.0/assets".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/assets";
+    # "gtk-4.0/gtk.css".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/gtk.css";
+    # "gtk-4.0/gtk-dark.css".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/gtk-dark.css";
   };
 
   home.file = {
@@ -75,7 +90,47 @@ in
     "wallpaper/wallpaper-1.jpg" = {
       source = ../assets/wallpaper-1.jpg;
     };
+    ".local/share/themes/${theme.name}" = {
+      source = "${theme.package}/share/themes/${theme.name}";
+    };
+    ".config/gtk-4.0/gtk.css".text = ''
+      window.messagedialog .response-area > button,
+      window.dialog.message .dialog-action-area > button,
+      .background.csd{
+        border-radius: 0;
+      }
+    '';
+  };
 
+  home = {
+    sessionVariables = {
+      XCURSOR_THEME = cursorTheme.name;
+      XCURSOR_SIZE = "${toString cursorTheme.size}";
+    };
+    pointerCursor =
+      cursorTheme
+      // {
+        gtk.enable = true;
+      };
+  };
+
+  fonts.fontconfig.enable = true;
+
+  gtk = {
+    inherit font cursorTheme iconTheme;
+    theme.name = theme.name;
+    enable = true;
+    gtk3.extraCss = ''
+      headerbar, .titlebar,
+      .csd:not(.popup):not(tooltip):not(messagedialog) decoration{
+        border-radius: 0;
+      }
+    '';
+  };
+
+  qt = {
+    enable = true;
+    platformTheme = "kde";
   };
 
   # link the configuration file in current directory to the specified location in home directory
@@ -193,7 +248,19 @@ in
     fd
     unstable.swaynotificationcenter
     inputs.matugen.packages.${pkgs.system}.default
+    inputs.nucleo.defaultPackage.${pkgs.system}
     unstable.jetbrains.datagrip
+    networkmanager
+    gtk3
+
+    cantarell-fonts
+    font-awesome
+    theme.package
+    font.package
+    cursorTheme.package
+    iconTheme.package
+    gnome.adwaita-icon-theme
+    papirus-icon-theme
   ];
 
   programs.ags = {
@@ -336,9 +403,10 @@ in
   wayland.windowManager.hyprland.settings = {
     exec-once = [
       ''${startupScript}/bin/start''
+      "hyprctl setcursor Qogir 24"
       "wl-paste --type text --watch cliphist store #Stores only text data"
       "wl-paste --type image --watch cliphist store #Stores only image data"
-      "hypridle"
+      # "hypridle"
     ];
     general = {
       gaps_in = 5;
@@ -353,7 +421,7 @@ in
     };
     windowrule = "rounding 10,^(kitty)$";
     workspace = [
-      "1, m:DP-1, persistent:true, default: true"
+      "1, m:DP-1, persistent:true, default:true"
       "2, m:DP-1, persistent:true"
       "3, m:DP-1, persistent:true"
       "4, m:DP-2, persistent:true, default:true"

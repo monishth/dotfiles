@@ -36,6 +36,9 @@
     matugen = {
       url = "github:/InioX/Matugen";
     };
+    nucleo = {
+      url = "github:monishth/nucleo-ui";
+    };
   };
 
   outputs =

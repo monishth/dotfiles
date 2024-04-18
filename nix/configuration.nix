@@ -31,7 +31,8 @@ in
   };
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nixpkgs.overlays = overlays;
-  # Bootloader.
+  # Bootloader.# dconf
+  programs.dconf.enable = true;
   boot.loader = {
     efi.canTouchEfiVariables = true;
     grub = {
@@ -222,7 +223,7 @@ in
   nixpkgs.config.nvidia.acceptLicense = true;
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages = (with pkgs; [
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     git
@@ -241,7 +242,29 @@ in
     google-chrome
     inputs.alejandra.defaultPackage.${system}
     pavucontrol
-  ];
+  ]) ++ (with pkgs;
+    with gnome;
+    [
+      gnome.adwaita-icon-theme
+      loupe
+      adwaita-icon-theme
+      nautilus
+      baobab
+      gnome-text-editor
+      gnome-calendar
+      gnome-boxes
+      gnome-system-monitor
+      gnome-control-center
+      gnome-weather
+      gnome-calculator
+      gnome-clocks
+      gnome-software # for flatpak
+      wl-gammactl
+      wl-clipboard
+      wayshot
+      pavucontrol
+      brightnessctl
+    ]);
 
   programs._1password.enable = true;
   programs._1password-gui = {
