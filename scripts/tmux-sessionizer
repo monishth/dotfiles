@@ -3,7 +3,9 @@
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
-    selected=$({ find ~/projects ~/ -mindepth 1 -maxdepth 1 -type d; echo misc; echo curl-land; } | nucleo)
+    #selected=$({ find ~/projects ~/ -mindepth 1 -maxdepth 1 -type d; echo misc; echo curl-land; echo '/etc/nixos'; } | nucleo)
+    selected=$({ fd --type d --hidden --max-depth 1 "" ~/projects; fd --type d --hidden --max-depth 1 "" ~/; echo misc; echo curl-land; echo '/etc/nixos'; } | nucleo)
+
 fi
 
 if [[ -z $selected ]]; then

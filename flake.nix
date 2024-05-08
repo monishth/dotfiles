@@ -39,6 +39,7 @@
     nucleo = {
       url = "github:monishth/nucleo-ui";
     };
+    spicetify-nix.url = "github:the-argus/spicetify-nix";
   };
 
   outputs =

@@ -1,4 +1,4 @@
-@theme "spotlight"
+@theme "tokyonight"
 configuration {
 /*	modes: "window,drun,run,ssh";*/
 /*	font: "mono 12";*/

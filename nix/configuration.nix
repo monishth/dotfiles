@@ -10,7 +10,6 @@
 let
   overlays = [
     inputs.neovim-nightly-overlay.overlay
-    (import ./tick-tick-latest-overlay.nix)
     (final: _prev: {
       unstable = import inputs.nixpkgs-unstable {
         system = final.system;
@@ -67,6 +66,11 @@ in
   services.xserver.videoDrivers = [ "nvidia" ];
   virtualisation.docker.enable = true;
   virtualisation.virtualbox.host.enable = true;
+  hardware.keyboard.qmk.enable = true;
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
+  services.blueman.enable = true;
+
   hardware.nvidia = {
     # Modesetting is required.
     modesetting.enable = true;
@@ -209,7 +213,7 @@ in
     isNormalUser = true;
     shell = pkgs.fish;
     description = "Monish Thirukkumaran";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "input" ];
     packages = with pkgs; [
       #  thunderbird
     ];
@@ -236,6 +240,7 @@ in
     swww
     # rofi-wayland
     wl-clipboard
+    unstable.ydotool
 
     firefox
     python311
@@ -284,7 +289,11 @@ in
     WLR_NO_HARDWARE_CURSORS = "1";
     NIXOS_OZONE_WL = "1";
   };
-
+  systemd.user.services.ydotool = {
+    enable = true;
+    serviceConfig = { ExecStart = "${pkgs.ydotool}/bin/ydotoold"; };
+    wantedBy = [ "default.target" ];
+  };
   programs.tmux = {
     extraConfig = builtins.readFile ./.tmux.conf;
   };
@@ -301,6 +310,7 @@ in
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+  services.openssh.ports = [ 22 2222 ];
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
