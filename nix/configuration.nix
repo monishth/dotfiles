@@ -9,7 +9,6 @@
 }:
 let
   overlays = [
-    inputs.neovim-nightly-overlay.overlay
     (final: _prev: {
       unstable = import inputs.nixpkgs-unstable {
         system = final.system;
@@ -262,6 +261,7 @@ in
       gnome-control-center
       gnome-weather
       gnome-calculator
+
       gnome-clocks
       gnome-software # for flatpak
       wl-gammactl

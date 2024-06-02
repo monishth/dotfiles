@@ -271,7 +271,7 @@ in
       discord
       slack
       gh
-      neovim-nightly
+      inputs.neovim-nightly-overlay.packages.${pkgs.system}.default
       rustup
       clang
       gnumake
@@ -310,6 +310,8 @@ in
       (python311.withPackages (p: [
         p.material-color-utilities
         p.pywayland
+        p.pygobject3
+        p.gst-python
       ]))
       bun
       unstable.lens
@@ -340,6 +342,12 @@ in
       unstable.asciinema
       unstable.asciinema-agg
       unstable.bambu-studio
+      # unstable.httpie
+      unstable.httpie-desktop
+
+      unstable.SDL2
+      unstable.libjpeg
+      unstable.zoom-us
     ];
 
   programs.ags = {
@@ -495,6 +503,9 @@ in
       ''${wallpaperScript}/bin/start''
       # "hypridle"
     ];
+    # input = {
+    #   follow_mouse = 0;
+    # };
     general = {
       gaps_in = 5;
       gaps_out = 5;
