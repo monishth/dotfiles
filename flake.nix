@@ -17,6 +17,12 @@
     };
     ags.url = "github:Aylur/ags";
     hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+    hy3 = {
+      url = "github:outfoxxed/hy3"; # where {version} is the hyprland release version
+      # or "github:outfoxxed/hy3" to follow the development branch.
+      # (you may encounter issues if you dont do the same for hyprland)
+      inputs.hyprland.follows = "hyprland";
+    };
     # hyprland.submodules = true;
     xdg-desktop-portal-hyprland.url = "github:hyprwm/xdg-desktop-portal-hyprland";
     neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
@@ -49,8 +55,8 @@
     , nixpkgs-master
     , home-manager
     , alejandra
-      # , nix-ld
-    , ...
+    , # , nix-ld
+      ...
     }:
     let
       pkgs-unstable = import nixpkgs-unstable {
@@ -61,7 +67,6 @@
         system = "x86_64-linux";
         config.allowUnfree = true;
       };
-
     in
     {
       # Please replace my-nixos with your hostname
@@ -75,7 +80,7 @@
         modules = [
           # nix-ld.nixosModules.nix-ld
 
-          # The module in this repository defines a new module under (programs.nix-ld.dev) instead of (programs.nix-ld) 
+          # The module in this repository defines a new module under (programs.nix-ld.dev) instead of (programs.nix-ld)
           # to not collide with the nixpkgs version.
           # { programs.nix-ld.dev.enable = true; }
           # Import the previous configuration.nix we used,
@@ -95,7 +100,6 @@
               inherit pkgs-unstable;
               inherit pkgs-master;
             };
-
 
             # Optionally, use home-manager.extraSpecialArgs to pass arguments to home.nix
           }

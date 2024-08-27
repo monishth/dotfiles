@@ -1,11 +1,11 @@
-{
-  config,
-  pkgs,
-  pkgs-unstable,
-  pkgs-master,
-  inputs,
-  ...
-}: let
+{ config
+, pkgs
+, pkgs-unstable
+, pkgs-master
+, inputs
+, ...
+}:
+let
   wallpaperScript = pkgs.pkgs.writeShellScriptBin "start" ''
     ${pkgs.swww}/bin/swww init &
 
@@ -87,7 +87,8 @@
     package = pkgs-unstable.morewaita-icon-theme;
   };
   spicePkgs = inputs.spicetify-nix.packages.${pkgs.system}.default;
-in {
+in
+{
   imports = [
     inputs.ags.homeManagerModules.default
     inputs.anyrun.homeManagerModules.default
@@ -523,6 +524,7 @@ in {
   home.stateVersion = "23.11";
   wayland.windowManager.hyprland.enable = true;
   wayland.windowManager.hyprland.package = inputs.hyprland.packages."${pkgs.system}".hyprland;
+  wayland.windowManager.hyprland.plugins = [ inputs.hy3.packages.x86_64-linux.hy3 ];
   wayland.windowManager.hyprland.settings = {
     exec-once = [
       "hyprctl setcursor Qogir 24"
@@ -542,7 +544,7 @@ in {
     general = {
       gaps_in = 5;
       gaps_out = 5;
-      layout = "master";
+      layout = "hy3";
     };
     decoration = {
       rounding = 3;
@@ -575,25 +577,43 @@ in {
         "$mainMod, Q, exec, kitty"
         ''$mainMod, SPACE, exec, rofi -show drun''
         # ''$mainMod, SPACE, exec, rofi -show calc ''
-        "ALT, F4, killactive"
-        "$mainMod, h, movefocus, l"
-        "$mainMod, j, movefocus, d"
-        "$mainMod, k, movefocus, u"
-        "$mainMod, l, movefocus, r"
+        "$mainMod SHIFT, ENTER, hy3:killactive"
+
+        "$mainMod, h, hy3:movefocus, l"
+        "$mainMod, j, hy3:movefocus, d"
+        "$mainMod, k, hy3:movefocus, u"
+        "$mainMod, l, hy3:movefocus, r"
+
+        "$mainMod CONTROL, h, hy3:movefocus, l, visable, nowarp"
+        "$mainMod CONTROL, j, hy3:movefocus, d, visable, nowarp"
+        "$mainMod CONTROL, k, hy3:movefocus, u, visable, nowarp"
+        "$mainMod CONTROL, l, hy3:movefocus, r, visable, nowarp"
+
         "$mainMod SHIFT, c, movetoworkspacesilent, special"
         "$mainMod, c, togglespecialworkspace"
-        "$mainMod SHIFT, h, movewindoworgroup, l"
-        "$mainMod SHIFT, j, movewindoworgroup, d"
-        "$mainMod SHIFT, k, movewindoworgroup, u"
-        "$mainMod SHIFT, l, movewindoworgroup, r"
+
+        "$mainMod SHIFT, h, hy3:movewindow, l, once"
+        "$mainMod SHIFT, j, hy3:movewindow, d, once"
+        "$mainMod SHIFT, k, hy3:movewindow, u, once"
+        "$mainMod SHIFT, l, hy3:movewindow, r, once"
+
+        "$mainMod+CONTROL+SHIFT, h, hy3:movewindow, l, once, visible"
+        "$mainMod+CONTROL+SHIFT, j, hy3:movewindow, d, once, visible"
+        "$mainMod+CONTROL+SHIFT, k, hy3:movewindow, u, once, visible"
+        "$mainMod+CONTROL+SHIFT, l, hy3:movewindow, r, once, visible"
+
+        "$mainMod SHIFT, d, hy3:debugnodes, h"
+
+        "$mainMod, d, hy3:makegroup, h"
+        "$mainMod, s, hy3:makegroup, v"
+        "$mainMod, z, hy3:makegroup, tab"
+        "$mainMod, a, hy3:changefocus, raise"
+        "$mainMod+SHIFT, a, hy3:changefocus, lower"
+        "$mainMod, e, hy3:expand, expand"
+        "$mainMod+SHIFT, e, hy3:expand, base"
+        "$mainMod, r, hy3:changegroup, opposite"
+
         ", XF86Launch6, exec, ${toggleSourceScript}/bin/toggle-source"
-        "$mainMod, left, moveintogroup, l"
-        "$mainMod, right, moveintogroup, r"
-        "$mainMod, up, moveintogroup, u"
-        "$mainMod, down, moveintogroup, d"
-        "$mainMod, bracketright, changegroupactive, f"
-        "$mainMod, bracketleft, changegroupactive, b"
-        "$mainMod, semicolon, togglegroup"
         "$mainMod, m, fullscreen, 1"
         "$mainMod, n, exec, swaync-client -t"
         "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
@@ -611,12 +631,15 @@ in {
         # binds $mod + [shift +] {1..10} to [move to] workspace {1..10}
         builtins.concatLists (builtins.genList
           (
-            x: let
-              ws = let
-                c = (x + 1) / 10;
-              in
+            x:
+            let
+              ws =
+                let
+                  c = (x + 1) / 10;
+                in
                 builtins.toString (x + 1 - (c * 10));
-            in [
+            in
+            [
               "$mainMod, ${ws}, workspace, ${toString (x + 1)}"
               "$mainMod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
             ]
@@ -626,6 +649,11 @@ in {
     bindm = [
       "$mainMod, mouse:272, movewindow"
       "$mainMod, mouse:273, resizewindow"
+    ];
+    bindn = [
+      ", mouse:272, hy3:focustab, mouse"
+      ", mouse_down, hy3:focustab, l, require_hovered"
+      ", mouse_up, hy3:focustab, r, require_hovered"
     ];
     monitor = [
       "DP-1, 5120x1440@240, 0x1080, 1"
@@ -641,11 +669,25 @@ in {
       "WLR_RENDERER_ALLOW_SOFTWARE,1"
       "HYPRCURSOR_THEME,rose-pint-hyprcursor"
     ];
-    master = {orientation = "center";};
+    master = { orientation = "center"; };
     misc = {
       animate_manual_resizes = true;
       animate_mouse_windowdragging = true;
       key_press_enables_dpms = true;
+    };
+    plugins = {
+      hy3 = {
+        tabs = {
+          height = 2;
+          padding = 6;
+          # render_text = false;
+        };
+        # autotile = {
+        #   enable = true;
+        #   trigger_width = -1;
+        #   trigger_height = 400;
+        # };
+      };
     };
   };
   # home.file.".tmux.conf".source = config.lib.file.mkOutOfStoreSymlink
