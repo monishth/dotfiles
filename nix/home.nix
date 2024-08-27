@@ -1,10 +1,11 @@
-{ config
-, pkgs
-, pkgs-unstable
-, inputs
-, ...
-}:
-let
+{
+  config,
+  pkgs,
+  pkgs-unstable,
+  pkgs-master,
+  inputs,
+  ...
+}: let
   wallpaperScript = pkgs.pkgs.writeShellScriptBin "start" ''
     ${pkgs.swww}/bin/swww init &
 
@@ -86,26 +87,24 @@ let
     package = pkgs-unstable.morewaita-icon-theme;
   };
   spicePkgs = inputs.spicetify-nix.packages.${pkgs.system}.default;
-in
-{
+in {
   imports = [
     inputs.ags.homeManagerModules.default
     inputs.anyrun.homeManagerModules.default
     inputs.spicetify-nix.homeManagerModules.default
   ];
 
-  programs.spicetify =
-    {
-      enable = true;
-      theme = spicePkgs.themes.catppuccin;
-      colorScheme = "mocha";
+  programs.spicetify = {
+    enable = true;
+    theme = spicePkgs.themes.catppuccin;
+    colorScheme = "mocha";
 
-      enabledExtensions = with spicePkgs.extensions; [
-        fullAppDisplay
-        shuffle # shuffle+ (special characters are sanitized out of ext names)
-        hidePodcasts
-      ];
-    };
+    enabledExtensions = with spicePkgs.extensions; [
+      fullAppDisplay
+      shuffle # shuffle+ (special characters are sanitized out of ext names)
+      hidePodcasts
+    ];
+  };
 
   # TODO please change the username & home directory to your own
   home.username = "monish";
@@ -136,26 +135,23 @@ in
       source = ../.config/swaync/style.css;
     };
 
-
     # "gtk-4.0/assets".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/assets";
     # "gtk-4.0/gtk.css".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/gtk.css";
     # "gtk-4.0/gtk-dark.css".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}/gtk-4.0/gtk-dark.css";
   };
 
-  xdg.desktopEntries =
-    {
-      "chrome-personal" = {
-        name = "Chrome Personal";
-        exec = "google-chrome-stable --profile-directory=Default";
-        icon = "google-chrome";
-      };
-      "chrome-work" =
-        {
-          name = "Chrome Work";
-          exec = ''google-chrome-stable --profile-directory="Profile 1"'';
-          icon = "google-chrome";
-        };
+  xdg.desktopEntries = {
+    "chrome-personal" = {
+      name = "Chrome Personal";
+      exec = "google-chrome-stable --profile-directory=Default";
+      icon = "google-chrome";
     };
+    "chrome-work" = {
+      name = "Chrome Work";
+      exec = ''google-chrome-stable --profile-directory="Profile 1"'';
+      icon = "google-chrome";
+    };
+  };
 
   home.file = {
     ".local/bin/tmux-sessionizer" = {
@@ -201,7 +197,7 @@ in
 
   qt = {
     enable = true;
-    platformTheme = "kde";
+    platformTheme.name = "kde";
   };
 
   # link the configuration file in current directory to the specified location in home directory
@@ -222,133 +218,163 @@ in
   # set cursor size and dpi for 4k monitor
 
   # Packages that should be installed to the user profile.
-  home.packages = with pkgs;
-    [
-      # archives
-      zip
-      xz
-      unzip
-      p7zip
+  home.packages = with pkgs; [
+    # archives
+    zip
+    xz
+    unzip
+    p7zip
 
-      # utils
-      ripgrep # recursively searches directories for a regex pattern
-      jq # A lightweight and flexible command-line JSON processor
-      eza # A modern replacement for ‘ls’
+    # utils
+    ripgrep # recursively searches directories for a regex pattern
+    jq # A lightweight and flexible command-line JSON processor
+    eza # A modern replacement for ‘ls’
 
-      # misc
-      cowsay
-      file
-      which
-      tree
-      gnused
-      gnutar
-      gawk
-      zstd
-      gnupg
+    # misc
+    cowsay
+    file
+    which
+    tree
+    gnused
+    gnutar
+    gawk
+    zstd
+    gnupg
 
-      # nix related
-      #
-      # it provides the command `nom` works just like `nix`
-      # with more details log output
-      nix-output-monitor
+    # nix related
+    #
+    # it provides the command `nom` works just like `nix`
+    # with more details log output
+    nix-output-monitor
 
-      btop # replacement of htop/nmon
-      iotop # io monitoring
-      iftop # network monitoring
+    btop # replacement of htop/nmon
+    iotop # io monitoring
+    iftop # network monitoring
 
-      # system call monitoring
-      strace # system call monitoring
-      ltrace # library call monitoring
-      lsof # list open files
+    # system call monitoring
+    strace # system call monitoring
+    ltrace # library call monitoring
+    lsof # list open files
 
-      # system tools
-      sysstat
-      lm_sensors # for `sensors` command
-      ethtool
-      pciutils # lspci
-      usbutils # lsusb
+    # system tools
+    sysstat
+    lm_sensors # for `sensors` command
+    ethtool
+    pciutils # lspci
+    usbutils # lsusb
 
-      discord
-      slack
-      gh
-      inputs.neovim-nightly-overlay.packages.${pkgs.system}.default
-      rustup
-      clang
-      gnumake
-      unstable.fzf
-      unstable.ticktick
-      eza
-      rofi-wayland
-      go
+    discord
+    slack
+    gh
+    inputs.neovim-nightly-overlay.packages.${pkgs.system}.default
+    rustup
+    cargo-generate
+    stripe-cli
+    clang
+    gnumake
+    unstable.fzf
+    unstable.ticktick
+    eza
+    rofi-wayland
 
-      nodejs_18
-      vesktop
-      tmux
-      unstable.lazygit
-      unstable.cliphist
-      unstable.slurp
-      unstable.grim
-      unstable.imv
-      unstable.hypridle
-      unstable.hyprlock
-      unstable.brightnessctl
-      # unstable.spotify
-      unstable.neofetch
-      unstable.gnome.gnome-calculator
-      unstable.rofi-calc
-      unstable.zathura
-      inputs.rose-pine-hyprcursor.packages.x86_64-linux.default
-      (unstable.eww.overrideAttrs (final: prev: {
-        withWayland = true;
-      }))
+    nodejs_18
+    nodejs_18.pkgs.pnpm
+    nodejs_18.pkgs.yarn
+    vesktop
+    tmux
+    unstable.lazygit
+    unstable.cliphist
+    unstable.slurp
+    unstable.grim
+    unstable.imv
+    unstable.hypridle
+    unstable.hyprlock
+    unstable.brightnessctl
+    # unstable.spotify
+    unstable.neofetch
+    unstable.gnome.gnome-calculator
+    unstable.rofi-calc
+    # unstable.zathura
+    # inputs.rose-pine-hyprcursor.packages.x86_64-linux.default
+    (unstable.eww.overrideAttrs (final: prev: {
+      withWayland = true;
+    }))
 
-      # packges for mat ui
-      fuzzel
-      pywal
-      sassc
-      dart-sass
-      (python311.withPackages (p: [
-        p.material-color-utilities
-        p.pywayland
-        p.pygobject3
-        p.gst-python
-      ]))
-      bun
-      unstable.lens
-      unstable.doctl
-      kubectl
-      wev
-      dbeaver
-      unstable.goxlr-utility
-      fd
-      unstable.swaynotificationcenter
-      inputs.matugen.packages.${pkgs.system}.default
-      inputs.nucleo.defaultPackage.${pkgs.system}
-      unstable.jetbrains.datagrip
-      networkmanager
-      gtk3
-      ulauncher
+    # packges for mat ui
+    fuzzel
+    pywal
+    sassc
+    dart-sass
+    (python311.withPackages (p: [
+      p.material-color-utilities
+      p.pywayland
+      p.pygobject3
+      p.gst-python
+    ]))
+    bun
+    unstable.lens
+    unstable.doctl
+    kubectl
+    wev
+    unstable.goxlr-utility
+    fd
+    unstable.swaynotificationcenter
+    inputs.matugen.packages.${pkgs.system}.default
+    inputs.nucleo.defaultPackage.${pkgs.system}
+    unstable.jetbrains.datagrip
+    unstable.jetbrains.goland
+    networkmanager
+    gtk3
+    ulauncher
 
-      cantarell-fonts
-      font-awesome
-      theme.package
-      font.package
-      cursorTheme.package
-      iconTheme.package
-      gnome.adwaita-icon-theme
-      papirus-icon-theme
+    cantarell-fonts
+    font-awesome
+    theme.package
+    font.package
+    cursorTheme.package
+    iconTheme.package
+    gnome.adwaita-icon-theme
+    papirus-icon-theme
 
-      any-nix-shell
-      unstable.asciinema
-      unstable.asciinema-agg
-      unstable.bambu-studio
-      # unstable.httpie
-      unstable.httpie-desktop
+    any-nix-shell
+    unstable.asciinema
+    unstable.asciinema-agg
+    unstable.bambu-studio
+    # unstable.httpie
+    unstable.httpie-desktop
 
-      unstable.SDL2
-      unstable.libjpeg
-      unstable.zoom-us
-    ];
+    unstable.SDL2
+    unstable.libjpeg
+    unstable.zoom-us
+    postgresql
+    unstable.obsidian
+    unstable.ngrok
+    unstable.redli
+
+    unstable.leiningen
+    unstable.lua51Packages.lua
+    unstable.lua51Packages.luarocks
+    # unstable.go
+    # unstable.gopls
+    unstable.vlc
+    unstable.sqlc
+    unstable.sqlite
+    unstable.remmina
+    unstable.vhs
+    unstable.lua-language-server
+    unstable.selene
+    unstable.shotcut
+    unstable.nixd
+    unstable.deadnix
+    unstable.statix
+    masterp.go
+    masterp.gopls
+  ];
+
+  programs.zathura.enable = true;
+  programs.zathura.options = {
+    selection-clipboard = "clipboard";
+  };
 
   programs.ags = {
     enable = true;
@@ -407,6 +433,7 @@ in
   # starship - an customizable prompt for any shell
   programs.starship = {
     enable = true;
+    enableTransience = true;
     # custom settings
     settings = {
       aws.disabled = true;
@@ -428,8 +455,8 @@ in
     font.name = "FiraCode Nerd Font Mono Reg";
     settings = {
       background_opacity = "0.7";
+      bold_font = "FiraCode Nerd Font Mono";
     };
-
   };
 
   # programs.neovim = {
@@ -444,7 +471,6 @@ in
     '';
   };
 
-
   programs.fish = {
     enable = true;
 
@@ -455,13 +481,17 @@ in
       set -x EDITOR 'nvim'
       fish_add_path $HOME/.bin
       fish_add_path $HOME/.local/bin
+      fish_add_path $HOME/go/bin
       any-nix-shell fish | source
+    '';
+
+    shellInitLast = ''
+      alias cd z
     '';
 
     # set some aliases, feel free to add more or remove some
     shellAliases = {
       nvim = "NVIM_APPNAME=astronvim_v4 command nvim";
-      cd = "z";
       ls = "eza -l";
     };
     plugins = [
@@ -506,6 +536,9 @@ in
     # input = {
     #   follow_mouse = 0;
     # };
+    debug = {
+      disable_logs = false;
+    };
     general = {
       gaps_in = 5;
       gaps_out = 5;
@@ -537,60 +570,59 @@ in
       "opacity 1.0, class:(kitty)"
     ];
     "$mainMod" = "SUPER";
-    bind = [
-      "$mainMod, Q, exec, kitty"
-      ''$mainMod, SPACE, exec, rofi -show drun''
-      # ''$mainMod, SPACE, exec, rofi -show calc ''
-      "ALT, F4, killactive"
-      "$mainMod, h, movefocus, l"
-      "$mainMod, j, movefocus, d"
-      "$mainMod, k, movefocus, u"
-      "$mainMod, l, movefocus, r"
-      "$mainMod SHIFT, c, movetoworkspacesilent, special"
-      "$mainMod, c, togglespecialworkspace"
-      "$mainMod SHIFT, h, movewindoworgroup, l"
-      "$mainMod SHIFT, j, movewindoworgroup, d"
-      "$mainMod SHIFT, k, movewindoworgroup, u"
-      "$mainMod SHIFT, l, movewindoworgroup, r"
-      ", XF86Launch6, exec, ${toggleSourceScript}/bin/toggle-source"
-      "$mainMod, left, moveintogroup, l"
-      "$mainMod, right, moveintogroup, r"
-      "$mainMod, up, moveintogroup, u"
-      "$mainMod, down, moveintogroup, d"
-      "$mainMod, bracketright, changegroupactive, f"
-      "$mainMod, bracketleft, changegroupactive, b"
-      "$mainMod, semicolon, togglegroup"
-      "$mainMod, m, fullscreen, 1"
-      "$mainMod, n, exec, swaync-client -t"
-      "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
-      "ALT, J, exec, wl-paste | jq . | wl-copy"
-      "$mainMod, S, exec, grim ~/Pictures/screenshot_$(date +'%s_grim.png')"
-      "$mainMod, minus, layoutmsg, mfact -0.05"
-      "$mainMod, P, exec, sleep 5; hyprctl dispatch dpms off;"
-      "$mainMod, equal, layoutmsg, mfact +0.05"
-      ''$mainMod CTRL, S, exec, grim -g "$(slurp -o)" ~/Pictures/screenshot_$(date +'%s_grim.png')''
-      # ''$mainMod CTRL SHIFT, S, exec, grim -g "$(slurp)" ~/Pictures/screenshot_$(date +'%s_grim.png')''
-      ''$mainMod CTRL SHIFT, S, exec, grim -g "$(slurp)" - | wl-copy''
-    ] ++ (
-      # workspaces
-      # binds $mod + [shift +] {1..10} to [move to] workspace {1..10}
-      builtins.concatLists (builtins.genList
-        (
-          x:
-          let
-            ws =
-              let
+    bind =
+      [
+        "$mainMod, Q, exec, kitty"
+        ''$mainMod, SPACE, exec, rofi -show drun''
+        # ''$mainMod, SPACE, exec, rofi -show calc ''
+        "ALT, F4, killactive"
+        "$mainMod, h, movefocus, l"
+        "$mainMod, j, movefocus, d"
+        "$mainMod, k, movefocus, u"
+        "$mainMod, l, movefocus, r"
+        "$mainMod SHIFT, c, movetoworkspacesilent, special"
+        "$mainMod, c, togglespecialworkspace"
+        "$mainMod SHIFT, h, movewindoworgroup, l"
+        "$mainMod SHIFT, j, movewindoworgroup, d"
+        "$mainMod SHIFT, k, movewindoworgroup, u"
+        "$mainMod SHIFT, l, movewindoworgroup, r"
+        ", XF86Launch6, exec, ${toggleSourceScript}/bin/toggle-source"
+        "$mainMod, left, moveintogroup, l"
+        "$mainMod, right, moveintogroup, r"
+        "$mainMod, up, moveintogroup, u"
+        "$mainMod, down, moveintogroup, d"
+        "$mainMod, bracketright, changegroupactive, f"
+        "$mainMod, bracketleft, changegroupactive, b"
+        "$mainMod, semicolon, togglegroup"
+        "$mainMod, m, fullscreen, 1"
+        "$mainMod, n, exec, swaync-client -t"
+        "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
+        "ALT, J, exec, wl-paste | jq . | wl-copy"
+        "$mainMod, S, exec, grim ~/Pictures/screenshot_$(date +'%s_grim.png')"
+        "$mainMod, minus, layoutmsg, mfact -0.05"
+        "$mainMod, P, exec, sleep 5; hyprctl dispatch dpms off;"
+        "$mainMod, equal, layoutmsg, mfact +0.05"
+        ''$mainMod CTRL, S, exec, grim -g "$(slurp -o)" ~/Pictures/screenshot_$(date +'%s_grim.png')''
+        # ''$mainMod CTRL SHIFT, S, exec, grim -g "$(slurp)" ~/Pictures/screenshot_$(date +'%s_grim.png')''
+        ''$mainMod CTRL SHIFT, S, exec, grim -g "$(slurp)" - | wl-copy''
+      ]
+      ++ (
+        # workspaces
+        # binds $mod + [shift +] {1..10} to [move to] workspace {1..10}
+        builtins.concatLists (builtins.genList
+          (
+            x: let
+              ws = let
                 c = (x + 1) / 10;
               in
-              builtins.toString (x + 1 - (c * 10));
-          in
-          [
-            "$mainMod, ${ws}, workspace, ${toString (x + 1)}"
-            "$mainMod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
-          ]
-        )
-        6)
-    );
+                builtins.toString (x + 1 - (c * 10));
+            in [
+              "$mainMod, ${ws}, workspace, ${toString (x + 1)}"
+              "$mainMod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
+            ]
+          )
+          6)
+      );
     bindm = [
       "$mainMod, mouse:272, movewindow"
       "$mainMod, mouse:273, resizewindow"
@@ -609,7 +641,7 @@ in
       "WLR_RENDERER_ALLOW_SOFTWARE,1"
       "HYPRCURSOR_THEME,rose-pint-hyprcursor"
     ];
-    master = { orientation = "center"; };
+    master = {orientation = "center";};
     misc = {
       animate_manual_resizes = true;
       animate_mouse_windowdragging = true;
