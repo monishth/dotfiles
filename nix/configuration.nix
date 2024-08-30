@@ -28,6 +28,7 @@ in
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    ./modules/shared/applications/one-password.nix
   ];
   nix.settings = {
     substituters = [ "https://hyprland.cachix.org" ];
@@ -278,20 +279,6 @@ in
       brightnessctl
     ]);
 
-  programs._1password.enable = true;
-  programs._1password-gui = {
-    enable = true;
-    polkitPolicyOwners = [ "monish" ];
-  };
-  environment.etc = {
-    "1password/custom_allowed_browsers" = {
-      text = ''
-        google-chrome
-        firefox
-      '';
-      mode = "0755";
-    };
-  };
   environment.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = "1";
     NIXOS_OZONE_WL = "1";
@@ -304,6 +291,7 @@ in
   programs.tmux = {
     extraConfig = builtins.readFile ./.tmux.conf;
   };
+
   # programs.nix-ld.enable = true;
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
