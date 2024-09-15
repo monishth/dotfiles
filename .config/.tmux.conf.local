@@ -411,6 +411,8 @@ tmux_conf_uninstall_plugins_on_reload=true
 
 # to enable a plugin, use the 'set -g @plugin' syntax:
 # visit https://github.com/tmux-plugins for available plugins
+set -gq allow-passthrough on
+set -g visual-activity off
 set -g @plugin 'tmux-plugins/tmux-copycat'
 set -g @plugin 'tmux-plugins/tmux-cpu'
 bind-key -r f display-popup -E "~/.local/bin/tmux-sessionizer"

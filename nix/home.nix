@@ -1,11 +1,11 @@
-{ config
-, pkgs
-, pkgs-unstable
-, pkgs-master
-, inputs
-, ...
-}:
-let
+{
+  config,
+  pkgs,
+  pkgs-unstable,
+  pkgs-master,
+  inputs,
+  ...
+}: let
   nerdfonts = pkgs.nerdfonts.override {
     fonts = [
       "Ubuntu"
@@ -35,8 +35,7 @@ let
     package = pkgs-unstable.morewaita-icon-theme;
   };
   spicePkgs = inputs.spicetify-nix.packages.${pkgs.system}.default;
-in
-{
+in {
   imports = [
     inputs.ags.homeManagerModules.default
     inputs.anyrun.homeManagerModules.default
@@ -218,7 +217,6 @@ in
     discord
     slack
     gh
-    inputs.neovim-nightly-overlay.packages.${pkgs.system}.default
     rustup
     cargo-generate
     stripe-cli
@@ -267,6 +265,7 @@ in
     unstable.lens
     unstable.doctl
     kubectl
+    kubernetes-helm
     wev
     unstable.goxlr-utility
     fd
@@ -304,10 +303,10 @@ in
     unstable.redli
 
     unstable.leiningen
-    unstable.lua51Packages.lua
-    unstable.lua51Packages.luarocks
-    # unstable.go
-    # unstable.gopls
+    unstable.luajitPackages.lua
+    unstable.luajitPackages.luarocks
+    unstable.go_1_23
+    unstable.gopls
     unstable.vlc
     unstable.sqlc
     unstable.sqlite
@@ -319,8 +318,11 @@ in
     unstable.nixd
     unstable.deadnix
     unstable.statix
-    masterp.go
-    masterp.gopls
+
+    unstable.marksman
+
+    # unstable.imagemagick
+    # unstable.luajitPackages.magick
   ];
 
   programs.zathura.enable = true;
@@ -374,6 +376,14 @@ in
   #  enable = true;
   #  defaultEditor = true;
   # };
+
+  programs.neovim = {
+    enable = true;
+    # extraPackages = ps: [ ps.imagemagick ];
+    package = inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;
+    extraLuaPackages = ps: [ps.magick];
+    # extraPackages = ps: [ ps.imagemagick ];
+  };
 
   # This value determines the home Manager release that your
   # configuration is compatible with. This helps avoid breakage
