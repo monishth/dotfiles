@@ -1,9 +1,9 @@
-{ config
-, pkgs
-, inputs
-, ...
-}:
-let
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}: let
   wallpaperScript = pkgs.pkgs.writeShellScriptBin "start" ''
     ${pkgs.swww}/bin/swww init &
 
@@ -54,11 +54,10 @@ let
 
     notify-send "Audio Source" "Switched to $source_name"
   '';
-in
-{
+in {
   wayland.windowManager.hyprland.enable = true;
   wayland.windowManager.hyprland.package = inputs.hyprland.packages."${pkgs.system}".hyprland;
-  wayland.windowManager.hyprland.plugins = [ inputs.hy3.packages.x86_64-linux.hy3 ];
+  wayland.windowManager.hyprland.plugins = [inputs.hy3.packages.x86_64-linux.hy3];
   wayland.windowManager.hyprland.settings = {
     exec-once = [
       "hyprctl setcursor Qogir 24"
@@ -102,8 +101,10 @@ in
     # };
     windowrulev2 = [
       "suppressevent maximize, class:.*"
-      "opacity 0.9, class:.*"
+      # "opacity 0.9, class:.*"
       "opacity 1.0, class:(kitty)"
+      "workspace special:special silent, class:^(ticktick)$"
+      "opacity 1.0 override 0.8 override,fullscreen:1"
     ];
     "$mainMod" = "SUPER";
     bind =
@@ -165,15 +166,12 @@ in
         # binds $mod + [shift +] {1..10} to [move to] workspace {1..10}
         builtins.concatLists (builtins.genList
           (
-            x:
-            let
-              ws =
-                let
-                  c = (x + 1) / 10;
-                in
+            x: let
+              ws = let
+                c = (x + 1) / 10;
+              in
                 builtins.toString (x + 1 - (c * 10));
-            in
-            [
+            in [
               "$mainMod, ${ws}, workspace, ${toString (x + 1)}"
               "$mainMod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
             ]
@@ -203,7 +201,7 @@ in
       "WLR_RENDERER_ALLOW_SOFTWARE,1"
       "HYPRCURSOR_THEME,rose-pint-hyprcursor"
     ];
-    master = { orientation = "center"; };
+    master = {orientation = "center";};
     misc = {
       animate_manual_resizes = true;
       animate_mouse_windowdragging = true;

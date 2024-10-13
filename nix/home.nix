@@ -1,11 +1,11 @@
-{
-  config,
-  pkgs,
-  pkgs-unstable,
-  pkgs-master,
-  inputs,
-  ...
-}: let
+{ config
+, pkgs
+, pkgs-unstable
+, pkgs-master
+, inputs
+, ...
+}:
+let
   nerdfonts = pkgs.nerdfonts.override {
     fonts = [
       "Ubuntu"
@@ -35,7 +35,8 @@
     package = pkgs-unstable.morewaita-icon-theme;
   };
   spicePkgs = inputs.spicetify-nix.packages.${pkgs.system}.default;
-in {
+in
+{
   imports = [
     inputs.ags.homeManagerModules.default
     inputs.anyrun.homeManagerModules.default
@@ -299,7 +300,6 @@ in {
     unstable.zoom-us
     postgresql
     unstable.obsidian
-    unstable.ngrok
     unstable.redli
 
     unstable.leiningen
@@ -319,7 +319,11 @@ in {
     unstable.deadnix
     unstable.statix
 
+    unstable.zig
+    unstable.zls
+
     unstable.marksman
+    unstable.watchexec
 
     # unstable.imagemagick
     # unstable.luajitPackages.magick
@@ -381,7 +385,7 @@ in {
     enable = true;
     # extraPackages = ps: [ ps.imagemagick ];
     package = inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;
-    extraLuaPackages = ps: [ps.magick];
+    extraLuaPackages = ps: [ ps.magick ];
     # extraPackages = ps: [ ps.imagemagick ];
   };
 
