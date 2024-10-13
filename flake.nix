@@ -46,7 +46,10 @@
     nucleo = {
       url = "github:monishth/nucleo-ui";
     };
-    spicetify-nix.url = "github:the-argus/spicetify-nix";
+    spicetify-nix = {
+      url = "github:Gerg-L/spicetify-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -69,7 +72,6 @@
       };
     in
     {
-      # Please replace my-nixos with your hostname
       nixosConfigurations.the-air-fryer = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
@@ -78,30 +80,19 @@
           inherit pkgs-master;
         };
         modules = [
-          # nix-ld.nixosModules.nix-ld
-
-          # The module in this repository defines a new module under (programs.nix-ld.dev) instead of (programs.nix-ld)
-          # to not collide with the nixpkgs version.
-          # { programs.nix-ld.dev.enable = true; }
-          # Import the previous configuration.nix we used,
-          # so the old configuration file still takes effect
-          ./nix/configuration.nix
-          # make home-manager as a module of nixos
-          # so that home-manager configuration will be deployed automatically when executing `nixos-rebuild switch`
+          ./hosts/the-air-fryer
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
 
             # TODO replace ryan with your own username
-            home-manager.users.monish = import ./nix/home.nix;
+            home-manager.users.monish = import ./home/monish/nixos.nix;
             home-manager.extraSpecialArgs = {
               inherit inputs;
               inherit pkgs-unstable;
               inherit pkgs-master;
             };
-
-            # Optionally, use home-manager.extraSpecialArgs to pass arguments to home.nix
           }
         ];
       };

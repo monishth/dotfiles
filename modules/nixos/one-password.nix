@@ -16,4 +16,11 @@
       mode = "0755";
     };
   };
+
+  programs.ssh = {
+    extraConfig = ''
+      Host *
+          IdentityAgent ~/.1password/agent.sock
+    '';
+  };
 }
