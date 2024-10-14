@@ -1,11 +1,12 @@
-{ pkgs
-, inputs
-, ...
+{
+  pkgs,
+  inputs,
+  ...
 }: {
   imports = [
     ./git.nix
     ./kitty.nix
-    ./neovim.nix
+    ./neovim
 
     inputs.spicetify-nix.homeManagerModules.default
     ./spicetify.nix

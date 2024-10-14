@@ -91,49 +91,70 @@ in
         "opacity 1.0 override 0.8 override,fullscreen:1"
       ];
       "$mainMod" = "SUPER";
-      bind = [
-        "$mainMod, return, exec, kitty"
-        "$mainMod, SPACE, exec, rofi -show drun"
-        "$mainMod, Q, hy3:killactive"
-        "$mainMod CONTROL, h, hy3:movefocus, l"
-        "$mainMod CONTROL, j, hy3:movefocus, d"
-        "$mainMod CONTROL, k, hy3:movefocus, u"
-        "$mainMod CONTROL, l, hy3:movefocus, r"
-        "$mainMod, h, hy3:movefocus, l, visible, nowarp"
-        "$mainMod, j, hy3:movefocus, d, visible, nowarp"
-        "$mainMod, k, hy3:movefocus, u, visible, nowarp"
-        "$mainMod, l, hy3:movefocus, r, visible, nowarp"
-        "$mainMod SHIFT, c, movetoworkspacesilent, special"
-        "$mainMod, c, togglespecialworkspace"
-        "$mainMod SHIFT, h, hy3:movewindow, l, once"
-        "$mainMod SHIFT, j, hy3:movewindow, d, once"
-        "$mainMod SHIFT, k, hy3:movewindow, u, once"
-        "$mainMod SHIFT, l, hy3:movewindow, r, once"
-        "$mainMod+CONTROL+SHIFT, h, hy3:movewindow, l, once, visible"
-        "$mainMod+CONTROL+SHIFT, j, hy3:movewindow, d, once, visible"
-        "$mainMod+CONTROL+SHIFT, k, hy3:movewindow, u, once, visible"
-        "$mainMod+CONTROL+SHIFT, l, hy3:movewindow, r, once, visible"
-        "$mainMod SHIFT, d, hy3:debugnodes, h"
-        "$mainMod, d, hy3:makegroup, h"
-        "$mainMod, s, hy3:makegroup, v"
-        "$mainMod, z, hy3:makegroup, tab"
-        "$mainMod, a, hy3:changefocus, raise"
-        "$mainMod+SHIFT, a, hy3:changefocus, lower"
-        "$mainMod, e, hy3:expand, expand"
-        "$mainMod+SHIFT, e, hy3:expand, base"
-        "$mainMod, r, hy3:changegroup, opposite"
-        ", XF86Launch6, exec, ${toggleSourceScript}/bin/toggle-source"
-        "$mainMod, m, fullscreen, 1"
-        "$mainMod, n, exec, swaync-client -t"
-        "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
-        "ALT, J, exec, wl-paste | jq . | wl-copy"
-        "$mainMod, S, exec, grim ~/Pictures/screenshot_$(date +'%s_grim.png')"
-        "$mainMod, minus, layoutmsg, mfact -0.05"
-        "$mainMod, P, exec, sleep 5; hyprctl dispatch dpms off;"
-        "$mainMod, equal, layoutmsg, mfact +0.05"
-        "$mainMod CTRL, S, exec, grim -g \"$(slurp -o)\" ~/Pictures/screenshot_$(date +'%s_grim.png')"
-        "$mainMod CTRL SHIFT, S, exec, grim -g \"$(slurp)\" - | wl-copy"
-      ];
+      bind =
+        [
+          "$mainMod, return, exec, kitty"
+          "$mainMod, SPACE, exec, rofi -show drun"
+          "$mainMod, Q, hy3:killactive"
+          "$mainMod CONTROL, h, hy3:movefocus, l"
+          "$mainMod CONTROL, j, hy3:movefocus, d"
+          "$mainMod CONTROL, k, hy3:movefocus, u"
+          "$mainMod CONTROL, l, hy3:movefocus, r"
+          "$mainMod, h, hy3:movefocus, l, visible, nowarp"
+          "$mainMod, j, hy3:movefocus, d, visible, nowarp"
+          "$mainMod, k, hy3:movefocus, u, visible, nowarp"
+          "$mainMod, l, hy3:movefocus, r, visible, nowarp"
+          "$mainMod SHIFT, c, movetoworkspacesilent, special"
+          "$mainMod, c, togglespecialworkspace"
+          "$mainMod SHIFT, h, hy3:movewindow, l, once"
+          "$mainMod SHIFT, j, hy3:movewindow, d, once"
+          "$mainMod SHIFT, k, hy3:movewindow, u, once"
+          "$mainMod SHIFT, l, hy3:movewindow, r, once"
+          "$mainMod+CONTROL+SHIFT, h, hy3:movewindow, l, once, visible"
+          "$mainMod+CONTROL+SHIFT, j, hy3:movewindow, d, once, visible"
+          "$mainMod+CONTROL+SHIFT, k, hy3:movewindow, u, once, visible"
+          "$mainMod+CONTROL+SHIFT, l, hy3:movewindow, r, once, visible"
+          "$mainMod SHIFT, d, hy3:debugnodes, h"
+          "$mainMod, d, hy3:makegroup, h"
+          "$mainMod, s, hy3:makegroup, v"
+          "$mainMod, z, hy3:makegroup, tab"
+          "$mainMod, a, hy3:changefocus, raise"
+          "$mainMod+SHIFT, a, hy3:changefocus, lower"
+          "$mainMod, e, hy3:expand, expand"
+          "$mainMod+SHIFT, e, hy3:expand, base"
+          "$mainMod, r, hy3:changegroup, opposite"
+          ", XF86Launch6, exec, ${toggleSourceScript}/bin/toggle-source"
+          "$mainMod, m, fullscreen, 1"
+          "$mainMod, n, exec, swaync-client -t"
+          "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
+          "ALT, J, exec, wl-paste | jq . | wl-copy"
+          "$mainMod, S, exec, grim ~/Pictures/screenshot_$(date +'%s_grim.png')"
+          "$mainMod, minus, layoutmsg, mfact -0.05"
+          "$mainMod, P, exec, sleep 5; hyprctl dispatch dpms off;"
+          "$mainMod, equal, layoutmsg, mfact +0.05"
+          "$mainMod CTRL, S, exec, grim -g \"$(slurp -o)\" ~/Pictures/screenshot_$(date +'%s_grim.png')"
+          "$mainMod CTRL SHIFT, S, exec, grim -g \"$(slurp)\" - | wl-copy"
+        ]
+        ++ (
+          # workspaces
+          # binds $mod + [shift +] {1..10} to [move to] workspace {1..10}
+          builtins.concatLists (builtins.genList
+            (
+              x:
+              let
+                ws =
+                  let
+                    c = (x + 1) / 10;
+                  in
+                  builtins.toString (x + 1 - (c * 10));
+              in
+              [
+                "$mainMod, ${ws}, workspace, ${toString (x + 1)}"
+                "$mainMod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
+              ]
+            )
+            6)
+        );
       bindm = [
         "$mainMod, mouse:272, movewindow"
         "$mainMod, mouse:273, resizewindow"

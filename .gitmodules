@@ -1,0 +1,3 @@
+[submodule "home/monish/programs/neovim/lazyvim"]
+	path = home/monish/programs/neovim/lazyvim
+	url = git@github.com:monishth/lazy-nvim.git
