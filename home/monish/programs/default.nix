@@ -2,19 +2,20 @@
   pkgs,
   inputs,
   ...
-}: {
+}:
+{
   imports = [
     ./git.nix
     ./kitty.nix
     ./neovim
 
-    inputs.spicetify-nix.homeManagerModules.default
     ./spicetify.nix
 
     ./starship.nix
     ./tmux.nix
     ./vscode.nix
     ./zoxide.nix
+    ./swaync.nix
   ];
   home.packages = with pkgs; [
     # archives
@@ -72,23 +73,13 @@
     unstable.fzf
     unstable.ticktick
     eza
-    rofi-wayland
     nodejs_18
     nodejs_18.pkgs.pnpm
     nodejs_18.pkgs.yarn
     vscode
     tmux
     unstable.lazygit
-    unstable.cliphist
-    unstable.slurp
-    unstable.grim
-    unstable.imv
-    unstable.hypridle
-    unstable.hyprlock
-    unstable.neofetch
     unstable.gnome-calculator
-    unstable.rofi-calc
-    pywal
     sassc
     dart-sass
     (python311.withPackages (p: [
@@ -102,10 +93,8 @@
     unstable.doctl
     kubectl
     kubernetes-helm
-    wev
     unstable.goxlr-utility
     fd
-    unstable.swaynotificationcenter
     inputs.matugen.packages.${pkgs.system}.default
     inputs.nucleo.defaultPackage.${pkgs.system}
     unstable.jetbrains.datagrip
@@ -114,11 +103,11 @@
     gtk3
     ulauncher
     cantarell-fonts
+    unstable.asciinema
     font-awesome
     gnome.adwaita-icon-theme
-    papirus-icon-theme
     any-nix-shell
-    unstable.asciinema
+    papirus-icon-theme
     unstable.asciinema-agg
     unstable.bambu-studio
     unstable.httpie-desktop
@@ -149,5 +138,8 @@
     unstable.marksman
     unstable.watchexec
     unstable.google-chrome
+    unstable.stylua
+    unstable.nil
+    unstable.nixfmt-rfc-style
   ];
 }

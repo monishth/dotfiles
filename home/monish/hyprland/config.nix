@@ -1,7 +1,8 @@
-{ config
-, pkgs
-, inputs
-, ...
+{
+  config,
+  pkgs,
+  inputs,
+  ...
 }:
 let
   wallpaperScript = pkgs.writeShellScriptBin "start" ''
@@ -45,7 +46,20 @@ let
   '';
 in
 {
-  home.packages = with pkgs; [ wl-clipboard ];
+  home.packages = with pkgs; [
+    wl-clipboard
+    rofi-wayland
+    unstable.cliphist
+    unstable.slurp
+    unstable.grim
+    unstable.imv
+    unstable.hypridle
+    unstable.hyprlock
+    unstable.neofetch
+    unstable.rofi-calc
+    pywal
+    wev
+  ];
   wayland.windowManager.hyprland = {
     enable = true;
     package = inputs.hyprland.packages."${pkgs.system}".hyprland;
@@ -138,8 +152,8 @@ in
         ++ (
           # workspaces
           # binds $mod + [shift +] {1..10} to [move to] workspace {1..10}
-          builtins.concatLists (builtins.genList
-            (
+          builtins.concatLists (
+            builtins.genList (
               x:
               let
                 ws =
@@ -152,8 +166,8 @@ in
                 "$mainMod, ${ws}, workspace, ${toString (x + 1)}"
                 "$mainMod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
               ]
-            )
-            6)
+            ) 6
+          )
         );
       bindm = [
         "$mainMod, mouse:272, movewindow"
@@ -178,7 +192,9 @@ in
         "WLR_RENDERER_ALLOW_SOFTWARE,1"
         "HYPRCURSOR_THEME,rose-pine-hyprcursor"
       ];
-      master = { orientation = "center"; };
+      master = {
+        orientation = "center";
+      };
       misc = {
         animate_manual_resizes = true;
         animate_mouse_windowdragging = true;
