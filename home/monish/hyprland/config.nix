@@ -59,6 +59,7 @@ in
     unstable.rofi-calc
     pywal
     wev
+    unstable.swww
   ];
   wayland.windowManager.hyprland = {
     enable = true;
