@@ -1,7 +1,8 @@
-{ config
-, pkgs
-, inputs
-, ...
+{
+  config,
+  pkgs,
+  inputs,
+  ...
 }:
 let
   overlays = import ../../overlays {
@@ -18,9 +19,12 @@ in
   ];
 
   nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
     # substituters = [ "https://hyprland.cachix.org" ];
-    # trusted-public-keys = [ "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8Pwtkuc=" ];
+    # trusted-public-keys = [ "nix run github:ryantm/agenix -- --helphyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8Pwtkuc=" ];
   };
 
   nixpkgs.config.allowUnfree = true;

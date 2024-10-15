@@ -1,8 +1,10 @@
 {
   config,
   pkgs,
+  inputs,
   ...
-}: {
+}:
+{
   imports = [
     ./users.nix
     ./networking.nix
@@ -28,7 +30,12 @@
   console.keyMap = "uk";
 
   fonts.packages = with pkgs; [
-    (pkgs.nerdfonts.override {fonts = ["FiraCode" "DroidSansMono"];})
+    (pkgs.nerdfonts.override {
+      fonts = [
+        "FiraCode"
+        "DroidSansMono"
+      ];
+    })
     material-symbols
   ];
 }

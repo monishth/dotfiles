@@ -18,6 +18,7 @@
     ./lang
     ./cli-dev-tools.nix
     ./gui-dev-tools.nix
+    ./ssh.nix
   ];
   home.packages = with pkgs; [
     # archives
