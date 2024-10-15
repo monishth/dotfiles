@@ -53,12 +53,13 @@
   };
 
   outputs =
-    inputs @ { nixpkgs
-    , nixpkgs-unstable
-    , nixpkgs-master
-    , home-manager
-    , alejandra
-    , # , nix-ld
+    inputs@{
+      nixpkgs,
+      nixpkgs-unstable,
+      nixpkgs-master,
+      home-manager,
+      alejandra,
+      # , nix-ld
       ...
     }:
     let
@@ -82,18 +83,21 @@
         modules = [
           ./hosts/the-air-fryer
           home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
+          (
+            { config, ... }:
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
 
-            # TODO replace ryan with your own username
-            home-manager.users.monish = import ./home/monish/nixos.nix;
-            home-manager.extraSpecialArgs = {
-              inherit inputs;
-              inherit pkgs-unstable;
-              inherit pkgs-master;
-            };
-          }
+              home-manager.users.monish = import ./home/monish/nixos.nix;
+              home-manager.extraSpecialArgs = {
+                inherit inputs;
+                inherit pkgs-unstable;
+                inherit pkgs-master;
+                nixosConfig = config;
+              };
+            }
+          )
         ];
       };
     };
