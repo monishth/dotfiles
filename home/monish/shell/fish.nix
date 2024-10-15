@@ -1,6 +1,7 @@
-{ config
-, pkgs
-, ...
+{
+  config,
+  pkgs,
+  ...
 }:
 let
   npm_token = builtins.readFile ../../../npm_token;
@@ -17,10 +18,10 @@ in
       fish_add_path $HOME/go/bin
       any-nix-shell fish | source
     '';
-    shellAliases = {
-      nvim = "NVIM_APPNAME=astronvim_v4 command nvim";
-      ls = "eza -l";
-    };
+    # shellAliases = {
+    #   nvim = "NVIM_APPNAME=astronvim_v4 command nvim";
+    #   ls = "eza -l";
+    # };
     shellInitLast = ''
       alias cd z
     '';

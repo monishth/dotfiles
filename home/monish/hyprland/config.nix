@@ -61,6 +61,7 @@ in
     wev
     unstable.swww
   ];
+
   wayland.windowManager.hyprland = {
     enable = true;
     package = inputs.hyprland.packages."${pkgs.system}".hyprland;
@@ -142,7 +143,7 @@ in
           "$mainMod, m, fullscreen, 1"
           "$mainMod, n, exec, swaync-client -t"
           "$mainMod, V, exec, cliphist list | rofi -dmenu | cliphist decode | wl-copy"
-          "ALT, J, exec, wl-paste | jq . | wl-copy"
+          "$mainMod, [, exec, wl-paste | jq . | wl-copy"
           "$mainMod, S, exec, grim ~/Pictures/screenshot_$(date +'%s_grim.png')"
           "$mainMod, minus, layoutmsg, mfact -0.05"
           "$mainMod, P, exec, sleep 5; hyprctl dispatch dpms off;"

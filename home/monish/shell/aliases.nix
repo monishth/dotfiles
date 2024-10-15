@@ -1,9 +1,9 @@
-{ config
-, pkgs
-, ...
-}: {
+{
+  ...
+}:
+{
   home.shellAliases = {
-    nvim = "NVIM_APPNAME=astronvim_v4 command nvim";
+    nvim = "NVIM_APPNAME=lazyvim command nvim";
     ls = "eza -l";
   };
 }
