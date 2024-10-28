@@ -10,5 +10,6 @@
     ./python.nix
     ./rust.nix
     ./zig.nix
+    ./gleam.nix
   ];
 }
