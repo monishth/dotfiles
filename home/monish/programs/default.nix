@@ -93,5 +93,6 @@
     unstable.obsidian
     unstable.vlc
     unstable.google-chrome
+    unstable.nautilus
   ];
 }

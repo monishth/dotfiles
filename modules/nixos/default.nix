@@ -15,7 +15,6 @@ in
     ./audio.nix
     ./desktop.nix
     ./virtualization.nix
-    ./one-password.nix
   ];
 
   nix.settings = {

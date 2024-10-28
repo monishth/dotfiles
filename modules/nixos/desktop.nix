@@ -1,7 +1,10 @@
-{ config
-, pkgs
-, ...
-}: {
+{
+  config,
+  pkgs,
+  ...
+}:
+{
+  imports = [ ./one-password.nix ];
   services.xserver = {
     xkb = {
       layout = "gb";
