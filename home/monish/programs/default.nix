@@ -94,5 +94,6 @@
     unstable.vlc
     unstable.google-chrome
     unstable.nautilus
+    inputs.zen-browser.packages."${system}".default
   ];
 }

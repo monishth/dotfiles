@@ -57,6 +57,7 @@ in
     unstable.hyprlock
     unstable.neofetch
     unstable.rofi-calc
+    libnotify
     pywal
     wev
     unstable.swww
@@ -103,7 +104,6 @@ in
       windowrulev2 = [
         "suppressevent maximize, class:.*"
         "opacity 1.0, class:(kitty)"
-        "workspace special:special silent, class:^(ticktick)$"
         "opacity 1.0 override 0.8 override,fullscreen:1"
       ];
       "$mainMod" = "SUPER";

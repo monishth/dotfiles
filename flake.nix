@@ -50,6 +50,7 @@
       url = "github:Gerg-L/spicetify-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    zen-browser.url = "github:ch4og/zen-browser-flake";
   };
 
   outputs =
