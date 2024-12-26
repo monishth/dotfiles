@@ -95,5 +95,9 @@
     unstable.google-chrome
     unstable.nautilus
     inputs.zen-browser.packages."${system}".default
+    screen
+    tio
+    unstable.tana
+    inputs.ghostty.${pkgs.system}.default
   ];
 }

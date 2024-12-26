@@ -2,11 +2,18 @@
   config,
   pkgs,
   ...
-}: {
+}:
+{
   users.users.monish = {
     isNormalUser = true;
     description = "Monish Thirukumaran";
-    extraGroups = ["networkmanager" "wheel" "docker" "input"];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "docker"
+      "input"
+      "dialout"
+    ];
     shell = pkgs.fish;
     packages = with pkgs; [
       thunderbird
