@@ -98,6 +98,7 @@
     screen
     tio
     unstable.tana
-    inputs.ghostty.${pkgs.system}.default
+    inputs.ghostty.packages.${pkgs.system}.default
+    unstable.qFlipper
   ];
 }
