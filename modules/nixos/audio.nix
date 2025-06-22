@@ -1,8 +1,9 @@
-{ config
-, pkgs
-, ...
-}: {
-  sound.enable = true;
+{
+  config,
+  pkgs,
+  ...
+}:
+{
   hardware.pulseaudio.enable = false;
   services.pipewire = {
     enable = true;

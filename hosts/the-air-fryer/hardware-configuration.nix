@@ -8,19 +8,30 @@
   modulesPath,
   inputs,
   ...
-}: let
-  hyprland-unstable = inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-in {
+}:
+let
+  hyprland-unstable =
+    inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+in
+{
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  boot.initrd.availableKernelModules = ["vmd" "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod"];
-  boot.supportedFilesystems = ["ntfs"];
-  boot.initrd.kernelModules = [];
-  boot.kernelModules = ["kvm-intel"];
-  boot.kernelParams = ["nvidia-drm.fbdev=1"];
-  boot.extraModulePackages = [];
+  boot.initrd.availableKernelModules = [
+    "vmd"
+    "xhci_pci"
+    "ahci"
+    "nvme"
+    "usbhid"
+    "usb_storage"
+    "sd_mod"
+  ];
+  boot.supportedFilesystems = [ "ntfs" ];
+  boot.initrd.kernelModules = [ ];
+  boot.kernelModules = [ "kvm-intel" ];
+  boot.kernelParams = [ "nvidia-drm.fbdev=1" ];
+  boot.extraModulePackages = [ ];
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/7e1feeb8-a159-4982-bc15-8bc05f81f7f2";
@@ -33,7 +44,7 @@ in {
   };
 
   swapDevices = [
-    {device = "/dev/disk/by-uuid/62e79a5b-56d6-4742-9c17-e495576a5a83";}
+    { device = "/dev/disk/by-uuid/62e79a5b-56d6-4742-9c17-e495576a5a83"; }
   ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
@@ -46,15 +57,14 @@ in {
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-  hardware.opengl = {
+  hardware.graphics = {
     enable = true;
-    driSupport = true;
-    driSupport32Bit = true;
+    enable32Bit = true;
     package = hyprland-unstable.mesa.drivers;
     package32 = hyprland-unstable.pkgsi686Linux.mesa.drivers;
   };
 
-  services.xserver.videoDrivers = ["nvidia"];
+  services.xserver.videoDrivers = [ "nvidia" ];
 
   hardware.nvidia = {
     modesetting.enable = true;

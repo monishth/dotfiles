@@ -100,5 +100,6 @@
     unstable.tana
     inputs.ghostty.packages.${pkgs.system}.default
     unstable.qFlipper
+    unstable.betaflight-configurator
   ];
 }

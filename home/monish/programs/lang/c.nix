@@ -8,5 +8,6 @@
     pkg-config
     gdb
     cmake
+    unstable.valgrind
   ];
 }
