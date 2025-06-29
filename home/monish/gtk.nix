@@ -1,15 +1,12 @@
 { pkgs, pkgs-unstable, ... }:
 let
-  nerdfonts = pkgs.nerdfonts.override {
-    fonts = [
-      "Ubuntu"
-      "UbuntuMono"
-      "CascadiaCode"
-      "FantasqueSansMono"
-      "FiraCode"
-      "Mononoki"
-    ];
-  };
+  fontPackages = with pkgs.nerd-fonts; [
+    ubuntu
+    ubuntu-mono
+    fantasque-sans-mono
+    fira-code
+    mononoki
+  ];
 
   theme = {
     name = "adw-gtk3-dark";
@@ -17,7 +14,7 @@ let
   };
   font = {
     name = "Ubuntu Nerd Font";
-    package = nerdfonts;
+    package = pkgs.nerd-fonts.ubuntu;
   };
   cursorTheme = {
     name = "Qogir";
@@ -30,7 +27,7 @@ let
   };
 in
 {
-  home.packages = [ cursorTheme.package ];
+  home.packages = [ cursorTheme.package ] ++ fontPackages;
   home.pointerCursor = cursorTheme;
   home.file = {
     ".local/share/themes/${theme.name}" = {

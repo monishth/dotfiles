@@ -19,7 +19,7 @@
     git
     curl
     tmux
-    dolphin
+    # dolphin
   ];
 
   system.stateVersion = "23.11";

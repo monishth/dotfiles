@@ -84,7 +84,7 @@
     gtk3
     cantarell-fonts
     font-awesome
-    gnome.adwaita-icon-theme
+    adwaita-icon-theme
     any-nix-shell
     papirus-icon-theme
     unstable.SDL2
@@ -101,5 +101,8 @@
     inputs.ghostty.packages.${pkgs.system}.default
     unstable.qFlipper
     unstable.betaflight-configurator
+    (ollama.override {
+      acceleration = "cuda";
+    })
   ];
 }
