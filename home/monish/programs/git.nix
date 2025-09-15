@@ -1,7 +1,10 @@
-{ config
-, pkgs
-, ...
-}: {
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+{
   programs.git = {
     enable = true;
     userName = "Monish Thirukumaran";
@@ -9,5 +12,6 @@
     extraConfig = {
       init.defaultBranch = "main";
     };
+
   };
 }

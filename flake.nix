@@ -16,9 +16,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     ags.url = "github:Aylur/ags";
-    hyprland.url = "git+https://github.com/hyprwm/Hyprland?ref=refs/tags/v0.49.0&submodules=1";
+    hyprland.url = "git+https://github.com/hyprwm/Hyprland?ref=refs/tags/v0.51.0&submodules=1";
     hy3 = {
-      url = "github:outfoxxed/hy3?ref=hl0.49.0"; # where {version} is the hyprland release version
+      url = "github:outfoxxed/hy3?ref=hl0.51.0"; # where {version} is the hyprland release version
       # or "github:outfoxxed/hy3" to follow the development branch.
       # (you may encounter issues if you dont do the same for hyprland)
       inputs.hyprland.follows = "hyprland";

@@ -103,10 +103,6 @@
     unstable.betaflight-configurator
     unstable.darktable
     kdePackages.dolphin
-    unstable.code-cursor-fhs
-    (ollama.override {
-      acceleration = "cuda";
-    })
     unstable.ngrok
   ];
 }
