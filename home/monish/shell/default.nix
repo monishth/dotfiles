@@ -3,5 +3,6 @@
     ./fish.nix
     ./aliases.nix
     ./env.nix
+    ./nushell.nix
   ];
 }
